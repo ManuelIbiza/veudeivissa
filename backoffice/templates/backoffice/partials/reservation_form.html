@@ -1,0 +1,183 @@
+<div class="dashboard-section">
+    <div class="dashboard-section-header">
+        <div>
+            <p class="section-kicker">Reservas</p>
+
+            <h2>{{ form_title }}</h2>
+
+            <p class="dashboard-section-subtitle">
+                Revisa la solicitud recibida y actualiza su estado o las notas internas.
+            </p>
+        </div>
+
+        <a href="{% url 'backoffice_reservation_list' %}" class="btn btn-secondary" data-ajax-link>
+            Volver a reservas
+        </a>
+    </div>
+
+    <div class="reservation-form-layout">
+        <article class="reservation-detail-card reservation-detail-card-large">
+            <div class="reservation-detail-card-header">
+                <div>
+                    <span class="reservation-detail-label">Cliente</span>
+                    <h3>{{ reservation.client_name }}</h3>
+                </div>
+
+                <span class="reservation-status reservation-status-{{ reservation.status }}">
+                    {{ reservation.get_status_display }}
+                </span>
+            </div>
+
+            <div class="reservation-detail-grid">
+                <div class="reservation-detail-item">
+                    <span>Email</span>
+                    <strong>{{ reservation.client_email }}</strong>
+                </div>
+
+                <div class="reservation-detail-item">
+                    <span>Teléfono</span>
+                    <strong>
+                        {% if reservation.client_phone %}
+                            {{ reservation.client_phone }}
+                        {% else %}
+                            Sin indicar
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="reservation-detail-item">
+                    <span>Fecha del evento</span>
+                    <strong>{{ reservation.event_date|date:"d/m/Y" }}</strong>
+                </div>
+
+                <div class="reservation-detail-item">
+                    <span>Hora aproximada</span>
+                    <strong>
+                        {% if reservation.event_time %}
+                            {{ reservation.event_time|time:"H:i" }}
+                        {% else %}
+                            Sin indicar
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="reservation-detail-item">
+                    <span>Lugar</span>
+                    <strong>
+                        {% if reservation.event_location %}
+                            {{ reservation.event_location }}
+                        {% else %}
+                            Sin indicar
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="reservation-detail-item">
+                    <span>Tipo de evento</span>
+                    <strong>
+                        {% if reservation.event_type %}
+                            {{ reservation.event_type }}
+                        {% else %}
+                            Sin indicar
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="reservation-detail-item">
+                    <span>Número de invitados</span>
+                    <strong>
+                        {% if reservation.guests %}
+                            {{ reservation.guests }}
+                        {% else %}
+                            Sin indicar
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="reservation-detail-item">
+                    <span>Formato preferido</span>
+                    <strong>
+                        {% if reservation.preferred_format %}
+                            {{ reservation.preferred_format.title }}
+                        {% else %}
+                            Sin indicar
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="reservation-detail-item">
+                    <span>Músico preferido</span>
+                    <strong>
+                        {% if reservation.preferred_musician %}
+                            {{ reservation.preferred_musician.name }}
+                        {% else %}
+                            Sin indicar
+                        {% endif %}
+                    </strong>
+                </div>
+
+                <div class="reservation-detail-item">
+                    <span>Fecha de solicitud</span>
+                    <strong>{{ reservation.created_at|date:"d/m/Y H:i" }}</strong>
+                </div>
+            </div>
+
+            {% if reservation.message %}
+                <div class="reservation-message-box">
+                    <span>Mensaje del cliente</span>
+                    <p>{{ reservation.message }}</p>
+                </div>
+            {% endif %}
+        </article>
+
+        <form
+            method="post"
+            action="{{ form_action }}"
+            class="dashboard-form reservation-management-form"
+            data-parent-url="{% url 'backoffice_reservation_list' %}"
+        >
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-error">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div class="translation-form-block">
+                <div class="translation-form-block-header">
+                    <h3>Gestión</h3>
+                    <p>Actualiza el estado de la solicitud y añade notas internas si lo necesitas.</p>
+                </div>
+
+                <div class="form-field">
+                    <label for="{{ form.status.id_for_label }}">
+                        Estado
+                    </label>
+
+                    {{ form.status }}
+                    {{ form.status.errors }}
+                </div>
+
+                <div class="form-field">
+                    <label for="{{ form.internal_notes.id_for_label }}">
+                        Notas internas
+                    </label>
+
+                    {{ form.internal_notes }}
+                    {{ form.internal_notes.errors }}
+                </div>
+            </div>
+
+            <div class="dashboard-form-actions reservation-form-actions">
+                <button type="submit" class="btn btn-primary">
+                    Guardar cambios
+                </button>
+
+                <a href="{% url 'backoffice_reservation_list' %}" class="btn btn-secondary" data-ajax-link>
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

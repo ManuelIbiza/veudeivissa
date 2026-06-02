@@ -1,0 +1,177 @@
+<div class="dashboard-section">
+    <div class="dashboard-section-header">
+        <div>
+            <h2>Configuración del sitio</h2>
+
+            <p class="dashboard-section-subtitle">
+                Edita la información general, los datos de contacto y las redes sociales de la web.
+                El contenido de Hero y About se gestiona desde sus propias pestañas.
+            </p>
+        </div>
+    </div>
+
+    <form
+        method="post"
+        action="{% url 'backoffice_site_configuration' %}"
+        enctype="multipart/form-data"
+        class="dashboard-form site-config-form"
+    >
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-error">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <div class="translation-form-block">
+            <div class="translation-form-block-header">
+                <h3>Identidad</h3>
+                <p>Datos principales que identifican la web.</p>
+            </div>
+
+            <div class="site-config-identity-layout">
+                <div class="form-grid compact-form-grid site-config-identity-fields">
+                    <div class="form-field">
+                        <label for="{{ form.site_name.id_for_label }}">
+                            Nombre del sitio
+                        </label>
+
+                        {{ form.site_name }}
+                        {{ form.site_name.errors }}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="{{ form.logo.id_for_label }}">
+                            Logotipo
+                        </label>
+
+                        <label for="{{ form.logo.id_for_label }}" class="photo-change-button">
+                            Cambiar logotipo
+                        </label>
+
+                        {{ form.logo }}
+
+                        <small>
+                            Recomendado: PNG con fondo transparente.
+                        </small>
+
+                        {{ form.logo.errors }}
+                    </div>
+                </div>
+
+                <div class="media-preview-column site-config-logo-preview-column">
+                    <span class="media-preview-label">
+                        Logo actual
+                    </span>
+
+                    {% if config.logo %}
+                        <div class="current-logo-preview">
+                            <img src="{{ config.logo.url }}" alt="Logo actual de {{ config.site_name }}">
+                        </div>
+                    {% else %}
+                        <div class="current-logo-preview current-logo-preview-empty">
+                            Sin logotipo
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="translation-form-block">
+            <div class="translation-form-block-header">
+                <h3>Contacto</h3>
+                <p>Información visible para que los clientes puedan contactar.</p>
+            </div>
+
+            <div class="form-grid site-config-contact-grid">
+                <div class="form-field">
+                    <label for="{{ form.contact_email.id_for_label }}">
+                        Correo de contacto
+                    </label>
+
+                    {{ form.contact_email }}
+                    {{ form.contact_email.errors }}
+                </div>
+
+                <div class="form-field">
+                    <label for="{{ form.contact_phone.id_for_label }}">
+                        Teléfono de contacto
+                    </label>
+
+                    {{ form.contact_phone }}
+                    {{ form.contact_phone.errors }}
+                </div>
+
+                <div class="form-field">
+                    <label for="{{ form.whatsapp.id_for_label }}">
+                        WhatsApp
+                    </label>
+
+                    {{ form.whatsapp }}
+                    {{ form.whatsapp.errors }}
+                </div>
+
+                <div class="form-field site-config-full">
+                    <label for="{{ form.address.id_for_label }}">
+                        Dirección
+                    </label>
+
+                    {{ form.address }}
+                    {{ form.address.errors }}
+                </div>
+            </div>
+        </div>
+
+        <div class="translation-form-block">
+            <div class="translation-form-block-header">
+                <h3>Redes sociales</h3>
+                <p>Enlaces externos a los perfiles sociales de la marca.</p>
+            </div>
+
+            <div class="form-grid site-config-social-grid">
+                <div class="form-field">
+                    <label for="{{ form.instagram_url.id_for_label }}">
+                        Instagram
+                    </label>
+
+                    {{ form.instagram_url }}
+                    {{ form.instagram_url.errors }}
+                </div>
+
+                <div class="form-field">
+                    <label for="{{ form.facebook_url.id_for_label }}">
+                        Facebook
+                    </label>
+
+                    {{ form.facebook_url }}
+                    {{ form.facebook_url.errors }}
+                </div>
+
+                <div class="form-field">
+                    <label for="{{ form.tiktok_url.id_for_label }}">
+                        TikTok
+                    </label>
+
+                    {{ form.tiktok_url }}
+                    {{ form.tiktok_url.errors }}
+                </div>
+
+                <div class="form-field">
+                    <label for="{{ form.spotify_url.id_for_label }}">
+                        Spotify
+                    </label>
+
+                    {{ form.spotify_url }}
+                    {{ form.spotify_url.errors }}
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-form-actions site-config-actions">
+            <button type="submit" class="btn btn-primary">
+                Guardar configuración
+            </button>
+        </div>
+    </form>
+</div>

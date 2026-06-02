@@ -1,0 +1,246 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Veu d'Eivissa\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-01 00:00+0000\n"
+"PO-Revision-Date: 2026-06-01 00:00+0000\n"
+"Last-Translator: Manuel Pérez\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Abrir menú"
+msgstr "Open menu"
+
+msgid "Inicio"
+msgstr "Home"
+
+msgid "About"
+msgstr "About"
+
+msgid "Formats"
+msgstr "Formats"
+
+msgid "Músicos"
+msgstr "Musicians"
+
+msgid "Música"
+msgstr "Music"
+
+msgid "Reservas"
+msgstr "Bookings"
+
+msgid "Contacto"
+msgstr "Contact"
+
+msgid "Selector de idioma"
+msgstr "Language selector"
+
+msgid "Música en vivo para eventos privados y celebraciones especiales en Ibiza."
+msgstr "Live music for private events and special celebrations in Ibiza."
+
+msgid "Ver formatos"
+msgstr "View formats"
+
+msgid "Solicitar reserva"
+msgstr "Request booking"
+
+msgid "Servicios musicales a medida"
+msgstr "Tailored music services"
+
+msgid "Seleccionamos músicos profesionales para bodas, eventos privados, villas, beach clubs y celebraciones especiales en Ibiza, adaptando cada propuesta al estilo, la atmósfera y las necesidades del cliente."
+msgstr "We select professional musicians for weddings, private events, villas, beach clubs and special celebrations in Ibiza, adapting each proposal to the client's style, atmosphere and needs."
+
+msgid "Nuestros formatos"
+msgstr "Our formats"
+
+msgid "Formato anterior"
+msgstr "Previous format"
+
+msgid "Formato siguiente"
+msgstr "Next format"
+
+msgid "Todavía no hay formatos disponibles."
+msgstr "There are no formats available yet."
+
+msgid "Selección artística"
+msgstr "Artistic selection"
+
+msgid "Próximamente añadiremos nuestra selección de músicos."
+msgstr "We will soon add our selection of musicians."
+
+msgid "Escucha nuestra selección"
+msgstr "Listen to our selection"
+
+msgid "Una pequeña selección musical para conocer mejor el ambiente y los estilos que acompañan nuestros eventos."
+msgstr "A small musical selection to better understand the atmosphere and styles that accompany our events."
+
+msgid "Selector de canciones"
+msgstr "Track selector"
+
+msgid "Cerrar formulario"
+msgstr "Close form"
+
+msgid "Solicita disponibilidad para tu evento"
+msgstr "Request availability for your event"
+
+msgid "Cuéntanos la fecha, el lugar y el tipo de evento que estás preparando. Revisaremos la disponibilidad y te contactaremos con una propuesta adaptada."
+msgstr "Tell us the date, location and type of event you are preparing. We will check availability and contact you with a tailored proposal."
+
+msgid "Nombre"
+msgstr "Name"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Teléfono"
+msgstr "Phone"
+
+msgid "Tipo de evento"
+msgstr "Event type"
+
+msgid "Fecha del evento"
+msgstr "Event date"
+
+msgid "Hora aproximada"
+msgstr "Approximate time"
+
+msgid "Lugar del evento"
+msgstr "Event location"
+
+msgid "Número de invitados"
+msgstr "Number of guests"
+
+msgid "Formato preferido"
+msgstr "Preferred format"
+
+msgid "Músico preferido"
+msgstr "Preferred musician"
+
+msgid "Mensaje"
+msgstr "Message"
+
+msgid "Enviar solicitud"
+msgstr "Send request"
+
+msgid "Todos los derechos reservados."
+msgstr "All rights reserved."
+
+msgid "Reservar"
+msgstr "Book"
+
+msgid "Selecciona un formato"
+msgstr "Select a format"
+
+msgid "Selecciona un músico"
+msgstr "Select a musician"
+
+msgid "Tu nombre"
+msgstr "Your name"
+
+msgid "tu@email.com"
+msgstr "your@email.com"
+
+msgid "+34 600 000 000"
+msgstr "+34 600 000 000"
+
+msgid "Hotel, villa, restaurante, finca..."
+msgstr "Hotel, villa, restaurant, estate..."
+
+msgid "Boda, evento privado, cumpleaños..."
+msgstr "Wedding, private event, birthday..."
+
+msgid "Ej: 80"
+msgstr "E.g. 80"
+
+msgid "Cuéntanos qué tipo de música o ambiente buscas..."
+msgstr "Tell us what kind of music or atmosphere you are looking for..."
+
+msgid "No indicado"
+msgstr "Not specified"
+
+msgid "No indicada"
+msgstr "Not specified"
+
+msgid "Sin mensaje adicional"
+msgstr "No additional message"
+
+msgid "Hola %(client_name)s,"
+msgstr "Hello %(client_name)s,"
+
+msgid "Hemos recibido correctamente tu solicitud de reserva."
+msgstr "We have successfully received your booking request."
+
+msgid "En breves nos pondremos en contacto contigo."
+msgstr "We will contact you shortly."
+
+msgid "Resumen de la reserva:"
+msgstr "Booking summary:"
+
+msgid "Nombre: %(client_name)s"
+msgstr "Name: %(client_name)s"
+
+msgid "Email: %(client_email)s"
+msgstr "Email: %(client_email)s"
+
+msgid "Teléfono: %(client_phone)s"
+msgstr "Phone: %(client_phone)s"
+
+msgid "Fecha del evento: %(event_date)s"
+msgstr "Event date: %(event_date)s"
+
+msgid "Hora aproximada: %(event_time)s"
+msgstr "Approximate time: %(event_time)s"
+
+msgid "Lugar del evento: %(event_location)s"
+msgstr "Event location: %(event_location)s"
+
+msgid "Tipo de evento: %(event_type)s"
+msgstr "Event type: %(event_type)s"
+
+msgid "Número de invitados: %(guests)s"
+msgstr "Number of guests: %(guests)s"
+
+msgid "Formato preferido: %(preferred_format)s"
+msgstr "Preferred format: %(preferred_format)s"
+
+msgid "Músico preferido: %(preferred_musician)s"
+msgstr "Preferred musician: %(preferred_musician)s"
+
+msgid "Mensaje:"
+msgstr "Message:"
+
+msgid "Gracias por contactar con %(site_name)s."
+msgstr "Thank you for contacting %(site_name)s."
+
+msgid "Un saludo,"
+msgstr "Best regards,"
+
+msgid "Reserva - %(client_name)s"
+msgstr "Booking - %(client_name)s"
+
+msgid "Confirmación de solicitud de reserva"
+msgstr "Booking request confirmation"
+
+msgid "Solicitud de reserva recibida - %(site_name)s"
+msgstr "Booking request received - %(site_name)s"
+
+msgid "Te adjuntamos un PDF con el resumen de tu reserva."
+msgstr "We have attached a PDF with your booking summary."
+
+msgid "Tu solicitud de reserva se ha enviado correctamente. Te hemos enviado un email con el resumen en PDF."
+msgstr "Your booking request has been sent successfully. We have sent you an email with the PDF summary."
+
+msgid "Tu solicitud de reserva se ha enviado correctamente. Te contactaremos lo antes posible."
+msgstr "Your booking request has been sent successfully. We will contact you as soon as possible."
+
+msgid "La reserva se ha guardado, pero no se pudo enviar el email con el PDF."
+msgstr "The booking has been saved, but the email with the PDF could not be sent."
+
+msgid "Formato %(number)s"
+msgstr "Format %(number)s"
+
+msgid "Formato %(title)s"
+msgstr "%(title)s format"

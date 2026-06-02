@@ -1,0 +1,125 @@
+<div class="dashboard-section">
+    <div class="dashboard-section-header">
+        <div>
+            <h2>Músicos</h2>
+            <p class="dashboard-section-subtitle">
+                Gestiona el orden y la actividad de los músicos visibles en la web.
+            </p>
+        </div>
+
+        {% if user_can_manage_musicians %}
+            <a href="{% url 'backoffice_musician_create' %}" class="btn btn-primary" data-ajax-link>
+                Nuevo músico
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="dashboard-table-wrapper">
+        <table class="dashboard-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Instrumento</th>
+                    <th>Activo</th>
+                    <th>Orden</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for musician in musicians %}
+                    <tr>
+                        <td>{{ musician.name }}</td>
+
+                        <td>
+                            {% if musician.instrument %}
+                                {{ musician.instrument }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if musician.is_active %}
+                                Sí
+                            {% else %}
+                                No
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if user_can_manage_musicians %}
+                                <div class="order-controls">
+                                    <span class="order-number">{{ musician.display_order }}</span>
+
+                                    <div class="order-buttons" aria-label="Reordenar">
+                                        <form
+                                            method="post"
+                                            action="{% url 'backoffice_musician_reorder' musician.id 'up' %}"
+                                        >
+                                            {% csrf_token %}
+                                            <button
+                                                type="submit"
+                                                class="order-button"
+                                                title="Subir"
+                                                aria-label="Subir"
+                                                {% if forloop.first %}disabled{% endif %}
+                                            >
+                                                ↑
+                                            </button>
+                                        </form>
+
+                                        <form
+                                            method="post"
+                                            action="{% url 'backoffice_musician_reorder' musician.id 'down' %}"
+                                        >
+                                            {% csrf_token %}
+                                            <button
+                                                type="submit"
+                                                class="order-button"
+                                                title="Bajar"
+                                                aria-label="Bajar"
+                                                {% if forloop.last %}disabled{% endif %}
+                                            >
+                                                ↓
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            {% else %}
+                                {{ musician.display_order }}
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <a href="{% url 'backoffice_musician_update' musician.id %}" data-ajax-link>
+                                Editar
+                            </a>
+
+                            {% if user_can_manage_musicians %}
+                                ·
+
+                                <form
+                                    method="post"
+                                    action="{% url 'backoffice_musician_delete' musician.id %}"
+                                    data-confirm="¿Seguro que quieres eliminar este músico?"
+                                >
+                                    {% csrf_token %}
+                                    <button type="submit">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">
+                            Todavía no hay músicos creados.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

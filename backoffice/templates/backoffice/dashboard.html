@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backoffice</title>
+    <link rel="stylesheet" href="{% static 'backoffice/backoffice.css' %}">
+</head>
+<body>
+    <div class="backoffice-layout">
+        <aside class="backoffice-sidebar">
+            <div class="sidebar-header">
+                <h2>Backoffice</h2>
+                <p>{{ request.user.username }}</p>
+            </div>
+
+            <div class="sidebar-nav">
+                {% if request.user.is_superuser or request.user.backoffice_profile.can_manage_site_sections %}
+                    <button type="button" class="sidebar-nav-button" data-url="{% url 'backoffice_hero_section' %}">
+                        <img src="{% static 'backoffice/icons/hero.svg' %}" alt="" class="sidebar-nav-icon">
+                        <span>Hero</span>
+                    </button>
+
+                    <button type="button" class="sidebar-nav-button" data-url="{% url 'backoffice_about_section' %}">
+                        <img src="{% static 'backoffice/icons/about.svg' %}" alt="" class="sidebar-nav-icon">
+                        <span>About</span>
+                    </button>
+                {% endif %}
+
+                <button type="button" class="sidebar-nav-button" data-url="{% url 'backoffice_musician_list' %}">
+                    <img src="{% static 'backoffice/icons/musicians.svg' %}" alt="" class="sidebar-nav-icon">
+                    <span>Músicos</span>
+                </button>
+
+                {% if request.user.is_superuser or request.user.backoffice_profile.can_manage_site_sections %}
+                    <button type="button" class="sidebar-nav-button" data-url="{% url 'backoffice_music_track_list' %}">
+                        <img src="{% static 'backoffice/icons/music.svg' %}" alt="" class="sidebar-nav-icon">
+                        <span>Música</span>
+                    </button>
+
+                    <button type="button" class="sidebar-nav-button" data-url="{% url 'backoffice_format_list' %}">
+                        <img src="{% static 'backoffice/icons/formats.svg' %}" alt="" class="sidebar-nav-icon">
+                        <span>Formatos</span>
+                    </button>
+
+                    <button type="button" class="sidebar-nav-button" data-url="{% url 'backoffice_site_configuration' %}">
+                        <img src="{% static 'backoffice/icons/settings.svg' %}" alt="" class="sidebar-nav-icon">
+                        <span>General / contacto</span>
+                    </button>
+                {% endif %}
+
+                <button type="button" class="sidebar-nav-button" data-url="{% url 'backoffice_reservation_list' %}">
+                    <img src="{% static 'backoffice/icons/reservations.svg' %}" alt="" class="sidebar-nav-icon">
+                    <span>Reservas</span>
+                </button>
+
+                {% if request.user.is_superuser %}
+                    <hr>
+
+                    <button type="button" class="sidebar-nav-button" data-url="{% url 'backoffice_manager_list' %}">
+                        <img src="{% static 'backoffice/icons/users.svg' %}" alt="" class="sidebar-nav-icon">
+                        <span>Usuarios</span>
+                    </button>
+                {% endif %}
+            </div>
+
+            <div class="sidebar-footer">
+                <a href="{% url 'home' %}" class="sidebar-link">
+                    <img src="{% static 'backoffice/icons/web.svg' %}" alt="" class="sidebar-action-icon">
+                    <span>Ver web</span>
+                </a>
+
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="sidebar-logout">
+                        <img src="{% static 'backoffice/icons/logout.svg' %}" alt="" class="sidebar-action-icon">
+                        <span>Cerrar sesión</span>
+                    </button>
+                </form>
+            </div>
+        </aside>
+
+        <main class="backoffice-main">
+            <div id="backoffice-content">
+                {% include 'backoffice/partials/_messages.html' %}
+                {% include initial_partial %}
+            </div>
+        </main>
+    </div>
+
+    <script src="{% static 'backoffice/backoffice.js' %}"></script>
+</body>
+</html>

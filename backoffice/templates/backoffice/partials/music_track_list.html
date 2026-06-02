@@ -1,0 +1,113 @@
+<div class="dashboard-section">
+    <div class="dashboard-section-header">
+        <div>
+            <h2>Música</h2>
+            <p class="dashboard-section-subtitle">
+                Administra las canciones o playlists de Spotify que aparecerán en la sección Música de la página principal.
+            </p>
+        </div>
+
+        <a href="{% url 'backoffice_music_track_create' %}" class="btn btn-primary" data-ajax-link>
+            Nueva canción
+        </a>
+    </div>
+
+    <div class="dashboard-table-wrapper">
+        <table class="dashboard-table">
+            <thead>
+                <tr>
+                    <th>Orden</th>
+                    <th>Título</th>
+                    <th>URL Spotify</th>
+                    <th>Activa</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for music_track in music_tracks %}
+                    <tr>
+                        <td>
+                            <div class="order-controls">
+                                <span class="order-number">{{ music_track.display_order }}</span>
+
+                                <div class="order-buttons" aria-label="Reordenar">
+                                    <form
+                                        method="post"
+                                        action="{% url 'backoffice_music_track_reorder' music_track.id 'up' %}"
+                                    >
+                                        {% csrf_token %}
+                                        <button
+                                            type="submit"
+                                            class="order-button"
+                                            title="Subir"
+                                            aria-label="Subir"
+                                            {% if forloop.first %}disabled{% endif %}
+                                        >
+                                            ↑
+                                        </button>
+                                    </form>
+
+                                    <form
+                                        method="post"
+                                        action="{% url 'backoffice_music_track_reorder' music_track.id 'down' %}"
+                                    >
+                                        {% csrf_token %}
+                                        <button
+                                            type="submit"
+                                            class="order-button"
+                                            title="Bajar"
+                                            aria-label="Bajar"
+                                            {% if forloop.last %}disabled{% endif %}
+                                        >
+                                            ↓
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>{{ music_track.title }}</td>
+
+                        <td>
+                            <a href="{{ music_track.spotify_url }}" target="_blank" rel="noopener noreferrer">
+                                Abrir Spotify
+                            </a>
+                        </td>
+
+                        <td>
+                            {% if music_track.is_active %}
+                                Sí
+                            {% else %}
+                                No
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <a href="{% url 'backoffice_music_track_update' music_track.id %}" data-ajax-link>
+                                Editar
+                            </a>
+
+                            ·
+
+                            <form
+                                method="post"
+                                action="{% url 'backoffice_music_track_delete' music_track.id %}"
+                                data-confirm="¿Eliminar esta canción?"
+                            >
+                                {% csrf_token %}
+                                <button type="submit">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">
+                            Todavía no hay canciones creadas.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

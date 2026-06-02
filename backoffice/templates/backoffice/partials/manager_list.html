@@ -1,0 +1,101 @@
+<div class="dashboard-section">
+    <div class="dashboard-section-header">
+        <h2>Usuarios del backoffice</h2>
+
+        <a href="{% url 'backoffice_manager_create' %}" class="btn btn-primary" data-ajax-link>
+            Nuevo usuario
+        </a>
+    </div>
+
+    <div class="dashboard-table-wrapper">
+        <table class="dashboard-table">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Activo</th>
+                    <th>Superadmin</th>
+                    <th>Añadir/eliminar músicos</th>
+                    <th>Editar secciones web</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for manager in managers %}
+                    <tr>
+                        <td>{{ manager.username }}</td>
+
+                        <td>
+                            {% if manager.first_name or manager.last_name %}
+                                {{ manager.first_name }} {{ manager.last_name }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if manager.email %}
+                                {{ manager.email }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if manager.is_active %}
+                                Sí
+                            {% else %}
+                                No
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if manager.is_superuser %}
+                                Sí
+                            {% else %}
+                                No
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if manager.is_superuser or manager.backoffice_profile.can_manage_musicians %}
+                                Sí
+                            {% else %}
+                                No
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if manager.is_superuser or manager.backoffice_profile.can_manage_site_sections %}
+                                Sí
+                            {% else %}
+                                No
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <a href="{% url 'backoffice_manager_update' manager.id %}" data-ajax-link>
+                                Editar
+                            </a>
+
+                            {% if not manager.is_superuser and manager != request.user %}
+                                ·
+
+                                <form
+                                    method="post"
+                                    action="{% url 'backoffice_manager_delete' manager.id %}"
+                                    data-confirm="¿Seguro que quieres eliminar este usuario?"
+                                >
+                                    {% csrf_token %}
+                                    <button type="submit">Eliminar</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

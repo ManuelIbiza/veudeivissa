@@ -1,0 +1,116 @@
+<div class="dashboard-section">
+    <div class="dashboard-section-header">
+        <h2>Formatos</h2>
+
+        <a href="{% url 'backoffice_format_create' %}" class="btn btn-primary" data-ajax-link>
+            Nuevo formato
+        </a>
+    </div>
+
+    <p>
+        Estos formatos aparecerán en la sección del libro de la página principal.
+    </p>
+
+    <div class="dashboard-table-wrapper">
+        <table class="dashboard-table">
+            <thead>
+                <tr>
+                    <th>Imagen</th>
+                    <th>Título</th>
+                    <th>Activo</th>
+                    <th>Orden</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for format in formats %}
+                    <tr>
+                        <td>
+                            {% if format.image %}
+                                <img
+                                    src="{{ format.image.url }}"
+                                    alt="{{ format.title }}"
+                                    style="width: 72px; height: 52px; object-fit: cover; border-radius: 10px;"
+                                >
+                            {% else %}
+                                Sin imagen
+                            {% endif %}
+                        </td>
+
+                        <td>{{ format.title }}</td>
+
+                        <td>
+                            {% if format.is_active %}
+                                Sí
+                            {% else %}
+                                No
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <div class="order-controls">
+                                <span class="order-number">{{ format.display_order }}</span>
+
+                                <div class="order-buttons" aria-label="Reordenar">
+                                    <form
+                                        method="post"
+                                        action="{% url 'backoffice_format_reorder' format.id 'up' %}"
+                                    >
+                                        {% csrf_token %}
+                                        <button
+                                            type="submit"
+                                            class="order-button"
+                                            title="Subir"
+                                            aria-label="Subir"
+                                            {% if forloop.first %}disabled{% endif %}
+                                        >
+                                            ↑
+                                        </button>
+                                    </form>
+
+                                    <form
+                                        method="post"
+                                        action="{% url 'backoffice_format_reorder' format.id 'down' %}"
+                                    >
+                                        {% csrf_token %}
+                                        <button
+                                            type="submit"
+                                            class="order-button"
+                                            title="Bajar"
+                                            aria-label="Bajar"
+                                            {% if forloop.last %}disabled{% endif %}
+                                        >
+                                            ↓
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <a href="{% url 'backoffice_format_update' format.id %}" data-ajax-link>
+                                Editar
+                            </a>
+
+                            <form
+                                method="post"
+                                action="{% url 'backoffice_format_delete' format.id %}"
+                                onsubmit="return confirm('¿Eliminar este formato?');"
+                            >
+                                {% csrf_token %}
+                                <button type="submit">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">
+                            Todavía no hay formatos creados.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

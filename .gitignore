@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# Django
+db.sqlite3
+*.log
+
+# Variables de entorno
+.env
+
+# Archivos privados generados
+private/reservas/
+*.pdf
+
+# Sistema
+.DS_Store
+Thumbs.db

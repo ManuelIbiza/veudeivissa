@@ -1,0 +1,49 @@
+{% load static i18n %}
+
+<section id="musicians" class="musicians-section section">
+    <div class="container">
+        <div class="section-heading">
+            <p class="section-label">{% trans "Músicos" %}</p>
+            <h2>{% trans "Selección artística" %}</h2>
+            <p>
+                {% trans "Descubre algunos de los músicos disponibles para bodas, eventos privados y celebraciones especiales." %}
+            </p>
+        </div>
+
+        <div class="musicians-grid">
+            {% for musician in musicians %}
+                <article class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-face flip-card-front">
+                            {% if musician.image %}
+                                <img src="{{ musician.image.url }}" alt="{{ musician.name }}">
+                            {% else %}
+                                <img src="{% static 'core/img/musicians/musician-1.jpg' %}" alt="{{ musician.name }}">
+                            {% endif %}
+
+                            <div class="flip-card-front-caption">
+                                <h3>{{ musician.name }}</h3>
+                            </div>
+                        </div>
+
+                        <div class="flip-card-face flip-card-back">
+                            <div class="flip-card-back-content">
+                                <h3>{{ musician.name }}</h3>
+
+                                {% if musician.translated_description %}
+                                    <p>{{ musician.translated_description }}</p>
+                                {% else %}
+                                    <p>{{ musician.translated_instrument }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            {% empty %}
+                <p class="musicians-empty">
+                    {% trans "Próximamente añadiremos nuestra selección de músicos." %}
+                </p>
+            {% endfor %}
+        </div>
+    </div>
+</section>

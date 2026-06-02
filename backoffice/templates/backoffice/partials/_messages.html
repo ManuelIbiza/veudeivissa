@@ -1,0 +1,23 @@
+{% if messages %}
+    <div class="dashboard-messages">
+        {% for message in messages %}
+            <div class="dashboard-message dashboard-message-{{ message.tags }}">
+                <span class="dashboard-message-icon">
+                    {% if message.tags == 'success' %}
+                        ✓
+                    {% elif message.tags == 'error' %}
+                        !
+                    {% elif message.tags == 'warning' %}
+                        !
+                    {% else %}
+                        i
+                    {% endif %}
+                </span>
+
+                <span class="dashboard-message-text">
+                    {{ message }}
+                </span>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

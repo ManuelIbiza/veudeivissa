@@ -1,0 +1,472 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE|default:'es' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if config and config.site_name %}{{ config.site_name }}{% else %}Veu d'Eivissa{% endif %}</title>
+    <link rel="stylesheet" href="{% static 'core/css/home.css' %}">
+</head>
+<body{% if reservation_form.errors or messages %} class="reservation-modal-open"{% endif %}>
+    <header class="site-header">
+        <nav class="navbar container">
+            <a href="#hero" class="nav-brand">
+                {% if config and config.logo %}
+                    <img src="{{ config.logo.url }}" alt="{% if config.site_name %}{{ config.site_name }}{% else %}Veu d'Eivissa{% endif %}" class="nav-logo">
+                {% endif %}
+
+                <span>
+                    {% if config and config.site_name %}
+                        {{ config.site_name }}
+                    {% else %}
+                        Veu d'Eivissa
+                    {% endif %}
+                </span>
+            </a>
+
+            <button class="nav-toggle" id="navToggle" aria-label="{% trans 'Abrir menú' %}">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <div class="nav-links" id="navLinks">
+                <a href="#hero">{% trans "Inicio" %}</a>
+                <a href="#about">{% trans "About" %}</a>
+                <a href="#formats">{% trans "Formats" %}</a>
+                <a href="#musicians">{% trans "Músicos" %}</a>
+                <a href="#music">{% trans "Música" %}</a>
+                <a href="#reservationModal" class="js-open-reservation">{% trans "Reservas" %}</a>
+                <a href="#contact">{% trans "Contacto" %}</a>
+
+                <div class="language-switcher" aria-label="{% trans 'Selector de idioma' %}">
+                    <a href="/es/" data-language-code="es" class="{% if request.LANGUAGE_CODE == 'es' %}is-active{% endif %}">ES</a>
+                    <a href="/ca/" data-language-code="ca" class="{% if request.LANGUAGE_CODE == 'ca' %}is-active{% endif %}">CA</a>
+                    <a href="/en/" data-language-code="en" class="{% if request.LANGUAGE_CODE == 'en' %}is-active{% endif %}">EN</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        {% if hero_images_payload %}
+            {{ hero_images_payload|json_script:"hero-images-data" }}
+        {% endif %}
+
+        {% if about_images_payload %}
+            {{ about_images_payload|json_script:"about-images-data" }}
+        {% endif %}
+
+        <section id="hero" class="hero-section">
+            <div class="hero-background">
+                <img
+                    id="heroImage"
+                    src="{% if hero_images.0 %}{{ hero_images.0.image.url }}{% elif config and config.hero_image %}{{ config.hero_image.url }}{% else %}{% static 'core/img/hero/1.png' %}{% endif %}"
+                    alt="{% if config and config.site_name %}{{ config.site_name }}{% else %}Veu d'Eivissa{% endif %}"
+                    class="hero-image"
+                >
+                <div class="hero-overlay"></div>
+            </div>
+
+            <div class="hero-content container">
+                <h1 class="hero-title">
+                    {% if config and config.translated_hero_title %}
+                        {{ config.translated_hero_title }}
+                    {% elif config and config.site_name %}
+                        {{ config.site_name }}
+                    {% else %}
+                        Veu d'Eivissa
+                    {% endif %}
+                </h1>
+
+                <p class="hero-text">
+                    {% if config and config.translated_hero_subtitle %}
+                        {{ config.translated_hero_subtitle }}
+                    {% else %}
+                        {% trans "Música en vivo para eventos privados y celebraciones especiales en Ibiza." %}
+                    {% endif %}
+                </p>
+
+                <div class="hero-actions">
+                    <a href="#formats" class="btn btn-primary">{% trans "Ver formatos" %}</a>
+                    <a href="#reservationModal" class="btn btn-secondary js-open-reservation">{% trans "Solicitar reserva" %}</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="about-section section">
+            <div class="container about-grid">
+                <div class="about-image-wrapper">
+                    <img
+                        id="aboutImage"
+                        src="{% if about_images.0 %}{{ about_images.0.image.url }}{% elif config and config.about_image %}{{ config.about_image.url }}{% else %}{% static 'core/img/about/musicians-1.jpg' %}{% endif %}"
+                        alt="{% if config and config.translated_about_title %}{{ config.translated_about_title }}{% else %}{% trans 'Servicios musicales a medida' %}{% endif %}"
+                        class="about-image"
+                    >
+                </div>
+
+                <div class="about-content">
+                    <h2>
+                        {% if config and config.translated_about_title %}
+                            {{ config.translated_about_title }}
+                        {% else %}
+                            {% trans "Servicios musicales a medida" %}
+                        {% endif %}
+                    </h2>
+
+                    <p>
+                        {% if config and config.translated_about_text %}
+                            {{ config.translated_about_text }}
+                        {% else %}
+                            {% blocktrans trimmed %}
+                                Seleccionamos músicos profesionales para bodas, eventos privados, villas,
+                                beach clubs y celebraciones especiales en Ibiza, adaptando cada propuesta
+                                al estilo, la atmósfera y las necesidades del cliente.
+                            {% endblocktrans %}
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="formats" class="formats-section section">
+            <div class="container">
+                <div class="section-heading">
+                    <p class="section-label">{% trans "Formats" %}</p>
+                    <h2>{% trans "Nuestros formatos" %}</h2>
+                </div>
+
+                {% if formats_payload %}
+                    {{ formats_payload|json_script:"formats-data" }}
+
+                    <div class="book-shell" id="bookShell">
+                        <div class="book-static">
+                            <div class="book-static-left" id="bookStaticLeft"></div>
+                            <div class="book-static-right" id="bookStaticRight"></div>
+                        </div>
+
+                        <div class="book-flip-layer" id="bookFlipLayer" aria-hidden="true">
+                            <div class="book-flip-page" id="bookFlipPage">
+                                <div class="book-face book-face-front" id="bookFaceFront"></div>
+                                <div class="book-face book-face-back" id="bookFaceBack"></div>
+                            </div>
+                        </div>
+
+                        <div class="book-spine"></div>
+                    </div>
+
+                    <div class="formats-book-controls">
+                        <button type="button" class="book-control" id="bookPrev" aria-label="{% trans 'Formato anterior' %}">←</button>
+                        <button type="button" class="book-control" id="bookNext" aria-label="{% trans 'Formato siguiente' %}">→</button>
+                    </div>
+                {% else %}
+                    <p class="empty-section-message">{% trans "Todavía no hay formatos disponibles." %}</p>
+                {% endif %}
+            </div>
+        </section>
+
+        {% include 'musicians/musicians.html' %}
+
+        {% if music_tracks %}
+            <section id="music" class="music-section section">
+                <div class="container">
+                    <div class="section-heading music-heading">
+                        <p class="section-label">{% trans "Música" %}</p>
+                        <h2>{% trans "Escucha nuestra selección" %}</h2>
+                    </div>
+
+                    <div class="music-player-card">
+                        <div class="music-player-copy">
+                            <h3 id="musicTrackTitle">
+                                {{ music_tracks.0.translated_title }}
+                            </h3>
+                        </div>
+
+                        <div class="music-player-frame">
+                            <div class="spotify-cookie-placeholder" id="spotifyCookiePlaceholder">
+                                <p>{% trans "Para escuchar esta canción necesitamos cargar el reproductor de Spotify." %}</p>
+                                <button type="button" class="btn btn-primary js-accept-cookies">
+                                    {% trans "Aceptar cookies y cargar Spotify" %}
+                                </button>
+                            </div>
+
+                            <iframe
+                                id="spotifyPlayer"
+                                data-src="{{ music_tracks.0.spotify_url }}"
+                                width="100%"
+                                height="152"
+                                frameborder="0"
+                                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                                loading="lazy"
+                                class="spotify-player-hidden">
+                            </iframe>
+                        </div>
+
+                        {% if music_tracks|length > 1 %}
+                            <div class="music-track-selector" aria-label="{% trans 'Selector de canciones' %}">
+                                {% for music_track in music_tracks %}
+                                    <button
+                                        type="button"
+                                        class="music-track-button {% if forloop.first %}is-active{% endif %}"
+                                        data-spotify-url="{{ music_track.spotify_url }}"
+                                        data-track-title="{{ music_track.translated_title }}"
+                                    >
+                                        {{ music_track.translated_title }}
+                                    </button>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+
+        <div id="reservationModal" class="reservation-modal{% if reservation_form.errors %} is-open{% endif %}" aria-hidden="{% if reservation_form.errors %}false{% else %}true{% endif %}">
+            <div class="reservation-modal__overlay js-close-reservation"></div>
+
+            <div class="reservation-modal__content" role="dialog" aria-modal="true" aria-labelledby="reservationModalTitle">
+                <button type="button" class="reservation-modal__close js-close-reservation" aria-label="{% trans 'Cerrar formulario' %}">
+                    ×
+                </button>
+
+                <div class="reservation-modal__scroll">
+                    <div class="reservation-modal__header">
+                        <p class="section-label">{% trans "Reservas" %}</p>
+                        <h2 id="reservationModalTitle">{% trans "Solicita disponibilidad para tu evento" %}</h2>
+                        <p>
+                            {% blocktrans trimmed %}
+                                Cuéntanos la fecha, el lugar y el tipo de evento que estás preparando.
+                                Revisaremos la disponibilidad y te contactaremos con una propuesta adaptada.
+                            {% endblocktrans %}
+                        </p>
+                    </div>
+
+                    <form method="post" class="reservation-form">
+                        {% csrf_token %}
+
+                        <div class="reservation-form__honeypot-wrapper" aria-hidden="true">
+                            <label for="{{ reservation_form.website.id_for_label }}">Website</label>
+                            {{ reservation_form.website }}
+                        </div>
+
+                        {% if reservation_form.non_field_errors %}
+                            <div class="reservation-form__errors">
+                                {{ reservation_form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        <div class="reservation-form__row">
+                            <div class="reservation-form__group">
+                                <label for="{{ reservation_form.client_name.id_for_label }}">{% trans "Nombre" %}</label>
+                                {{ reservation_form.client_name }}
+                                {{ reservation_form.client_name.errors }}
+                            </div>
+
+                            <div class="reservation-form__group">
+                                <label for="{{ reservation_form.client_email.id_for_label }}">{% trans "Email" %}</label>
+                                {{ reservation_form.client_email }}
+                                {{ reservation_form.client_email.errors }}
+                            </div>
+                        </div>
+
+                        <div class="reservation-form__row">
+                            <div class="reservation-form__group">
+                                <label for="{{ reservation_form.client_phone.id_for_label }}">{% trans "Teléfono" %}</label>
+                                {{ reservation_form.client_phone }}
+                                {{ reservation_form.client_phone.errors }}
+                            </div>
+
+                            <div class="reservation-form__group">
+                                <label for="{{ reservation_form.event_type.id_for_label }}">{% trans "Tipo de evento" %}</label>
+                                {{ reservation_form.event_type }}
+                                {{ reservation_form.event_type.errors }}
+                            </div>
+                        </div>
+
+                        <div class="reservation-form__row">
+                            <div class="reservation-form__group">
+                                <label for="{{ reservation_form.event_date.id_for_label }}">{% trans "Fecha del evento" %}</label>
+                                {{ reservation_form.event_date }}
+                                {{ reservation_form.event_date.errors }}
+                            </div>
+
+                            <div class="reservation-form__group">
+                                <label for="{{ reservation_form.event_time.id_for_label }}">{% trans "Hora aproximada" %}</label>
+                                {{ reservation_form.event_time }}
+                                {{ reservation_form.event_time.errors }}
+                            </div>
+                        </div>
+
+                        <div class="reservation-form__row">
+                            <div class="reservation-form__group">
+                                <label for="{{ reservation_form.event_location.id_for_label }}">{% trans "Lugar del evento" %}</label>
+                                {{ reservation_form.event_location }}
+                                {{ reservation_form.event_location.errors }}
+                            </div>
+
+                            <div class="reservation-form__group">
+                                <label for="{{ reservation_form.guests.id_for_label }}">{% trans "Número de invitados" %}</label>
+                                {{ reservation_form.guests }}
+                                {{ reservation_form.guests.errors }}
+                            </div>
+                        </div>
+
+                        <div class="reservation-form__row">
+                            <div class="reservation-form__group">
+                                <label for="{{ reservation_form.preferred_format.id_for_label }}">{% trans "Formato preferido" %}</label>
+                                {{ reservation_form.preferred_format }}
+                                {{ reservation_form.preferred_format.errors }}
+                            </div>
+
+                            <div class="reservation-form__group">
+                                <label for="{{ reservation_form.preferred_musician.id_for_label }}">{% trans "Músico preferido" %}</label>
+                                {{ reservation_form.preferred_musician }}
+                                {{ reservation_form.preferred_musician.errors }}
+                            </div>
+                        </div>
+
+                        <div class="reservation-form__group">
+                            <label for="{{ reservation_form.message.id_for_label }}">{% trans "Mensaje" %}</label>
+                            {{ reservation_form.message }}
+                            {{ reservation_form.message.errors }}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary reservation-form__submit">
+                            {% trans "Enviar solicitud" %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {% if messages %}
+            <div id="reservationFeedbackModal" class="reservation-modal reservation-feedback-modal is-open" aria-hidden="false">
+                <div class="reservation-modal__overlay js-close-feedback"></div>
+
+                <div class="reservation-modal__content reservation-feedback-modal__content" role="dialog" aria-modal="true" aria-labelledby="reservationFeedbackTitle">
+                    <button type="button" class="reservation-modal__close js-close-feedback" aria-label="{% trans 'Cerrar aviso' %}">
+                        ×
+                    </button>
+
+                    <div class="reservation-feedback-modal__body">
+                        <p class="section-label">{% trans "Reserva" %}</p>
+                        <h2 id="reservationFeedbackTitle">{% trans "Solicitud recibida" %}</h2>
+
+                        {% for message in messages %}
+                            <div class="reservation-feedback-message reservation-feedback-message-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+
+                        <button type="button" class="btn btn-primary reservation-feedback-modal__button js-close-feedback">
+                            {% trans "Entendido" %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+    </main>
+
+    <footer id="contact" class="site-footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                {% if config and config.logo %}
+                    <img src="{{ config.logo.url }}" alt="{% if config.site_name %}{{ config.site_name }}{% else %}Veu d'Eivissa{% endif %}" class="footer-logo">
+                {% endif %}
+
+                <h3>{% if config and config.site_name %}{{ config.site_name }}{% else %}Veu d'Eivissa{% endif %}</h3>
+            </div>
+
+            <div class="footer-contact-row">
+                <a class="footer-contact-card" href="mailto:{% if config and config.contact_email %}{{ config.contact_email }}{% else %}info@veudeivissa.com{% endif %}">
+                    <span>{% trans "Email" %}</span>
+                    <strong>{% if config and config.contact_email %}{{ config.contact_email }}{% else %}info@veudeivissa.com{% endif %}</strong>
+                </a>
+
+                <a class="footer-contact-card" href="{% if config and config.whatsapp %}https://wa.me/{{ config.whatsapp|cut:' '|cut:'+' }}{% else %}#{% endif %}">
+                    <span>WhatsApp</span>
+                    <strong>{% if config and config.whatsapp %}{{ config.whatsapp }}{% else %}+34 600 000 000{% endif %}</strong>
+                </a>
+
+                <a class="footer-contact-card" href="tel:{% if config and config.contact_phone %}{{ config.contact_phone|cut:' ' }}{% else %}+34600000000{% endif %}">
+                    <span>{% trans "Teléfono" %}</span>
+                    <strong>{% if config and config.contact_phone %}{{ config.contact_phone }}{% else %}+34 600 000 000{% endif %}</strong>
+                </a>
+            </div>
+
+            {% if config and config.instagram_url or config.facebook_url or config.tiktok_url or config.spotify_url %}
+                <div class="footer-social-row">
+                    {% if config.instagram_url %}
+                        <a href="{{ config.instagram_url }}" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Instagram">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M7.8 2h8.4A5.8 5.8 0 0 1 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8A5.8 5.8 0 0 1 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2Zm0 2A3.8 3.8 0 0 0 4 7.8v8.4A3.8 3.8 0 0 0 7.8 20h8.4a3.8 3.8 0 0 0 3.8-3.8V7.8A3.8 3.8 0 0 0 16.2 4H7.8Zm8.7 2.2a1.3 1.3 0 1 1 0 2.6 1.3 1.3 0 0 1 0-2.6ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/>
+                            </svg>
+                        </a>
+                    {% endif %}
+
+                    {% if config.facebook_url %}
+                        <a href="{{ config.facebook_url }}" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Facebook">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M14 8.3V6.8c0-.7.5-.9 1-.9h2V2.2L14.2 2C11.1 2 9.4 3.8 9.4 6.5v1.8H7v4h2.4V22H14v-9.7h3.1l.5-4H14Z"/>
+                            </svg>
+                        </a>
+                    {% endif %}
+
+                    {% if config.tiktok_url %}
+                        <a href="{{ config.tiktok_url }}" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="TikTok">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M16.5 2c.4 3 2.1 4.8 5 5.1v4.1a8.5 8.5 0 0 1-5-1.6v6.2c0 3.7-2.5 6.2-6.2 6.2A6.2 6.2 0 0 1 4 15.8c0-3.6 2.8-6.3 6.4-6.3.4 0 .8 0 1.1.1v4.3a3 3 0 0 0-1.1-.2 2.1 2.1 0 1 0 2.1 2.1V2h4Z"/>
+                            </svg>
+                        </a>
+                    {% endif %}
+
+                    {% if config.spotify_url %}
+                        <a href="{{ config.spotify_url }}" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Spotify">
+                            <svg viewBox="0 0 496 512" aria-hidden="true">
+                                <path d="M248 8C111.1 8 0 119.1 0 256s111.1 248 248 248 248-111.1 248-248S384.9 8 248 8zm100.7 364.9c-4.2 0-6.8-1.3-10.7-3.6-62.4-37.6-135-39.2-206.7-24.5-3.9 1-9 2.6-11.9 2.6-9.7 0-15.8-7.7-15.8-15.8 0-10.3 6.1-15.2 13.6-16.8 81.9-18.1 165.6-16.5 237 26.2 6.1 3.9 9.7 7.4 9.7 16.5s-7.1 15.4-15.2 15.4zm26.9-65.6c-5.2 0-8.7-2.3-12.3-4.2-62.5-37-155.7-51.9-238.6-29.4-4.8 1.3-7.4 2.6-11.9 2.6-10.7 0-19.4-8.7-19.4-19.4s5.2-17.8 15.5-20.7c27.8-7.8 56.2-13.6 97.8-13.6 64.9 0 127.6 16.1 177 45.5 8.1 4.8 11.3 11 11.3 19.7-.1 10.8-8.5 19.5-19.4 19.5zm31-76.2c-5.2 0-8.4-1.3-12.9-3.9-71.2-42.5-198.5-52.7-280.9-29.7-3.6 1-8.1 2.6-12.9 2.6-13.2 0-23.3-10.3-23.3-23.6 0-13.6 8.4-21.3 17.4-23.9 35.2-10.3 74.6-15.2 117.5-15.2 73 0 149.5 15.2 205.4 47.8 7.8 4.5 12.9 10.7 12.9 22.6 0 13.6-11 23.3-23.2 23.3z"/>
+                            </svg>
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        <p>
+            &copy; {{ current_year }}
+            {% if config and config.site_name %}{{ config.site_name }}{% else %}Veu d'Eivissa{% endif %}.
+            {% trans "Todos los derechos reservados." %}
+        </p>
+
+        <button type="button" class="cookie-preferences-button" id="cookiePreferences">
+            {% trans "Preferencias de cookies" %}
+        </button>
+    </footer>
+
+    <div class="cookie-banner" id="cookieBanner" aria-hidden="true">
+        <div class="cookie-banner__content">
+            <div class="cookie-banner__text">
+                <strong>{% trans "Aviso de cookies" %}</strong>
+                <p>
+                    {% trans "Esta web usa cookies para mejorar tu experiencia en futuras visitas. ¿Aceptas el uso de dichas cookies?" %}
+                </p>
+            </div>
+
+            <div class="cookie-banner__actions">
+                <button type="button" class="cookie-button cookie-button-secondary" id="cookieReject">
+                    {% trans "Rechazar" %}
+                </button>
+
+                <button type="button" class="cookie-button cookie-button-primary" id="cookieAccept">
+                    {% trans "Aceptar" %}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <a href="#reservationModal" class="floating-reservation js-open-reservation">{% trans "Reservar" %}</a>
+    <a href="#contact" class="floating-contact">{% trans "Contacto" %}</a>
+
+    <script src="{% static 'core/js/home.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<div class="dashboard-section">
+    <div class="dashboard-section-header">
+        <h2>{{ form_title }}</h2>
+    </div>
+
+    <form method="post" action="{% if manager %}{% url 'backoffice_manager_update' manager.id %}{% else %}{% url 'backoffice_manager_create' %}{% endif %}" class="dashboard-form" data-parent-url="{% url 'backoffice_manager_list' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <div class="dashboard-form-actions">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a href="{% url 'backoffice_manager_list' %}" class="btn btn-secondary" data-ajax-link>
+                Volver
+            </a>
+        </div>
+    </form>
+</div>

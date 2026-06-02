@@ -1,0 +1,77 @@
+<div class="dashboard-section">
+    <div class="dashboard-section-header">
+        <div>
+            <h2>
+                {% if form.instance.pk %}
+                    Editar canción
+                {% else %}
+                    Nueva canción
+                {% endif %}
+            </h2>
+
+            <p class="dashboard-section-subtitle">
+                Completa la información de la canción de Spotify.
+            </p>
+        </div>
+    </div>
+
+    <section class="config-card">
+        <form method="post" action="{{ form_action }}" class="dashboard-form" data-parent-url="{% url 'backoffice_music_track_list' %}">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-error">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div class="config-field">
+                {{ form.title.label_tag }}
+                {{ form.title }}
+                {{ form.title.errors }}
+            </div>
+
+            <div class="config-field">
+                {{ form.spotify_url.label_tag }}
+                {{ form.spotify_url }}
+
+                {% if form.spotify_url.help_text %}
+                    <small class="form-help-text">
+                        {{ form.spotify_url.help_text }}
+                    </small>
+                {% endif %}
+
+                {{ form.spotify_url.errors }}
+            </div>
+
+            <div class="config-field config-field-inline">
+                {{ form.is_active }}
+                {{ form.is_active.label_tag }}
+                {{ form.is_active.errors }}
+            </div>
+
+            <div class="config-field">
+                {{ form.display_order.label_tag }}
+                {{ form.display_order }}
+
+                {% if form.display_order.help_text %}
+                    <small class="form-help-text">
+                        {{ form.display_order.help_text }}
+                    </small>
+                {% endif %}
+
+                {{ form.display_order.errors }}
+            </div>
+
+            <div class="dashboard-form-actions">
+                <button type="submit" class="btn btn-primary">
+                    Guardar canción
+                </button>
+
+                <a href="{% url 'backoffice_music_track_list' %}" class="btn btn-secondary" data-ajax-link>
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </section>
+</div>

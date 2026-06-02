@@ -1,0 +1,173 @@
+<div class="dashboard-section">
+    <div class="dashboard-section-header">
+        <div>
+            <h2>Solicitudes de reserva</h2>
+            <p class="dashboard-section-subtitle">
+                Gestiona las solicitudes enviadas desde el formulario público de la web.
+            </p>
+        </div>
+    </div>
+
+    <div class="reservation-stats-grid">
+        <div class="reservation-stat-card">
+            <span>Pendientes</span>
+            <strong>{{ pending_count }}</strong>
+        </div>
+
+        <div class="reservation-stat-card">
+            <span>Confirmadas</span>
+            <strong>{{ confirmed_count }}</strong>
+        </div>
+
+        <div class="reservation-stat-card">
+            <span>Canceladas</span>
+            <strong>{{ cancelled_count }}</strong>
+        </div>
+
+        <div class="reservation-stat-card">
+            <span>Completadas</span>
+            <strong>{{ completed_count }}</strong>
+        </div>
+    </div>
+
+    {% if reservations %}
+        <div class="reservation-list">
+            {% for reservation in reservations %}
+                <article class="reservation-card">
+                    <div class="reservation-card-main">
+                        <div class="reservation-card-header">
+                            <div>
+                                <h3>{{ reservation.client_name }}</h3>
+
+                                <div class="reservation-client-info">
+                                    <span>{{ reservation.client_email }}</span>
+
+                                    {% if reservation.client_phone %}
+                                        <span>{{ reservation.client_phone }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <span class="reservation-status reservation-status-{{ reservation.status }}">
+                                {{ reservation.get_status_display }}
+                            </span>
+                        </div>
+
+                        <div class="reservation-detail-grid-list">
+                            <div class="reservation-detail-item">
+                                <span>Fecha</span>
+                                <strong>{{ reservation.event_date|date:"d/m/Y" }}</strong>
+                            </div>
+
+                            <div class="reservation-detail-item">
+                                <span>Hora</span>
+                                <strong>
+                                    {% if reservation.event_time %}
+                                        {{ reservation.event_time|time:"H:i" }}
+                                    {% else %}
+                                        Sin indicar
+                                    {% endif %}
+                                </strong>
+                            </div>
+
+                            <div class="reservation-detail-item">
+                                <span>Lugar</span>
+                                <strong>
+                                    {% if reservation.event_location %}
+                                        {{ reservation.event_location }}
+                                    {% else %}
+                                        Sin indicar
+                                    {% endif %}
+                                </strong>
+                            </div>
+
+                            <div class="reservation-detail-item">
+                                <span>Tipo de evento</span>
+                                <strong>
+                                    {% if reservation.event_type %}
+                                        {{ reservation.event_type }}
+                                    {% else %}
+                                        Sin indicar
+                                    {% endif %}
+                                </strong>
+                            </div>
+
+                            <div class="reservation-detail-item">
+                                <span>Invitados</span>
+                                <strong>
+                                    {% if reservation.guests %}
+                                        {{ reservation.guests }}
+                                    {% else %}
+                                        Sin indicar
+                                    {% endif %}
+                                </strong>
+                            </div>
+
+                            <div class="reservation-detail-item">
+                                <span>Formato</span>
+                                <strong>
+                                    {% if reservation.preferred_format %}
+                                        {{ reservation.preferred_format.title }}
+                                    {% else %}
+                                        Sin indicar
+                                    {% endif %}
+                                </strong>
+                            </div>
+
+                            <div class="reservation-detail-item">
+                                <span>Músico</span>
+                                <strong>
+                                    {% if reservation.preferred_musician %}
+                                        {{ reservation.preferred_musician.name }}
+                                    {% else %}
+                                        Sin indicar
+                                    {% endif %}
+                                </strong>
+                            </div>
+
+                            <div class="reservation-detail-item">
+                                <span>Solicitud</span>
+                                <strong>{{ reservation.created_at|date:"d/m/Y H:i" }}</strong>
+                            </div>
+                        </div>
+
+                        {% if reservation.message %}
+                            <div class="reservation-message-box">
+                                <span>Mensaje del cliente</span>
+                                <p>{{ reservation.message }}</p>
+                            </div>
+                        {% endif %}
+
+                        {% if reservation.internal_notes %}
+                            <div class="reservation-message-box reservation-message-box-internal">
+                                <span>Notas internas</span>
+                                <p>{{ reservation.internal_notes }}</p>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="reservation-card-actions">
+                        <a href="{% url 'backoffice_reservation_update' reservation.id %}" class="btn btn-primary" data-ajax-link>
+                            Gestionar
+                        </a>
+
+                        <form method="post" action="{% url 'backoffice_reservation_delete' reservation.id %}" data-confirm="¿Seguro que quieres eliminar esta reserva?">
+                            {% csrf_token %}
+
+                            <button type="submit" class="reservation-delete-button">
+                                Eliminar
+                            </button>
+                        </form>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="dashboard-empty">
+            <h3>Todavía no hay reservas</h3>
+            <p>
+                Cuando alguien envíe una solicitud desde la web, aparecerá aquí.
+            </p>
+        </div>
+    {% endif %}
+</div>

@@ -1,0 +1,260 @@
+<div class="dashboard-section">
+    <div class="dashboard-section-header">
+        <div>
+            <h2>About</h2>
+            <p class="dashboard-section-subtitle">
+                Gestiona el texto de presentación de la página de inicio.
+            </p>
+        </div>
+    </div>
+
+    <form
+        method="post"
+        action="{% url 'backoffice_about_section' %}"
+        class="dashboard-form"
+    >
+        {% csrf_token %}
+
+        {{ form.non_field_errors }}
+
+        <div class="translation-form-block">
+            <div class="translation-form-block-header">
+                <h3>Títulos</h3>
+                <p>Texto principal de la sección About.</p>
+            </div>
+
+            <div class="form-grid compact-form-grid">
+                <div class="form-field">
+                    <label for="{{ form.about_title.id_for_label }}">
+                        Español
+                    </label>
+
+                    {{ form.about_title }}
+
+                    {% if form.about_title.help_text %}
+                        <small>{{ form.about_title.help_text }}</small>
+                    {% endif %}
+
+                    {% for error in form.about_title.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-field">
+                    <label for="{{ form.about_title_ca.id_for_label }}">
+                        Catalán
+                    </label>
+
+                    {{ form.about_title_ca }}
+
+                    {% if form.about_title_ca.help_text %}
+                        <small>{{ form.about_title_ca.help_text }}</small>
+                    {% endif %}
+
+                    {% for error in form.about_title_ca.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-field">
+                    <label for="{{ form.about_title_en.id_for_label }}">
+                        Inglés
+                    </label>
+
+                    {{ form.about_title_en }}
+
+                    {% if form.about_title_en.help_text %}
+                        <small>{{ form.about_title_en.help_text }}</small>
+                    {% endif %}
+
+                    {% for error in form.about_title_en.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="translation-form-block">
+            <div class="translation-form-block-header">
+                <h3>Contenido</h3>
+                <p>Texto descriptivo que aparece dentro de la sección About.</p>
+            </div>
+
+            <div class="form-grid compact-form-grid">
+                <div class="form-field">
+                    <label for="{{ form.about_text.id_for_label }}">
+                        Español
+                    </label>
+
+                    {{ form.about_text }}
+
+                    {% if form.about_text.help_text %}
+                        <small>{{ form.about_text.help_text }}</small>
+                    {% endif %}
+
+                    {% for error in form.about_text.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-field">
+                    <label for="{{ form.about_text_ca.id_for_label }}">
+                        Catalán
+                    </label>
+
+                    {{ form.about_text_ca }}
+
+                    {% if form.about_text_ca.help_text %}
+                        <small>{{ form.about_text_ca.help_text }}</small>
+                    {% endif %}
+
+                    {% for error in form.about_text_ca.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-field">
+                    <label for="{{ form.about_text_en.id_for_label }}">
+                        Inglés
+                    </label>
+
+                    {{ form.about_text_en }}
+
+                    {% if form.about_text_en.help_text %}
+                        <small>{{ form.about_text_en.help_text }}</small>
+                    {% endif %}
+
+                    {% for error in form.about_text_en.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                Guardar contenido del about
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="dashboard-section">
+    <div class="dashboard-section-header">
+        <div>
+            <h2>Imágenes del about</h2>
+            <p class="dashboard-section-subtitle">
+                Ordena, activa o elimina las imágenes de la sección about.
+            </p>
+        </div>
+
+        <a href="{% url 'backoffice_about_image_create' %}" class="btn btn-primary" data-ajax-link>
+            Nueva imagen
+        </a>
+    </div>
+
+    <div class="dashboard-table-wrapper">
+        <table class="dashboard-table">
+            <thead>
+                <tr>
+                    <th>Imagen</th>
+                    <th>Título</th>
+                    <th>Activa</th>
+                    <th>Orden</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for about_image in about_images %}
+                    <tr>
+                        <td>
+                            {% if about_image.image %}
+                                <img
+                                    src="{{ about_image.image.url }}"
+                                    alt="{{ about_image.title }}"
+                                    class="backoffice-thumb"
+                                >
+                            {% else %}
+                                Sin imagen
+                            {% endif %}
+                        </td>
+
+                        <td>{{ about_image.title }}</td>
+
+                        <td>
+                            {% if about_image.is_active %}
+                                Sí
+                            {% else %}
+                                No
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <div class="order-controls">
+                                <span class="order-number">{{ about_image.display_order }}</span>
+
+                                <div class="order-buttons" aria-label="Reordenar">
+                                    <form
+                                        method="post"
+                                        action="{% url 'backoffice_about_image_reorder' about_image.id 'up' %}"
+                                    >
+                                        {% csrf_token %}
+                                        <button
+                                            type="submit"
+                                            class="order-button"
+                                            title="Subir"
+                                            aria-label="Subir"
+                                            {% if forloop.first %}disabled{% endif %}
+                                        >
+                                            ↑
+                                        </button>
+                                    </form>
+
+                                    <form
+                                        method="post"
+                                        action="{% url 'backoffice_about_image_reorder' about_image.id 'down' %}"
+                                    >
+                                        {% csrf_token %}
+                                        <button
+                                            type="submit"
+                                            class="order-button"
+                                            title="Bajar"
+                                            aria-label="Bajar"
+                                            {% if forloop.last %}disabled{% endif %}
+                                        >
+                                            ↓
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <a href="{% url 'backoffice_about_image_update' about_image.id %}" data-ajax-link>
+                                Editar
+                            </a>
+
+                            ·
+
+                            <form
+                                method="post"
+                                action="{% url 'backoffice_about_image_delete' about_image.id %}"
+                                data-confirm="¿Eliminar esta imagen?"
+                            >
+                                {% csrf_token %}
+                                <button type="submit">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">
+                            Todavía no hay imágenes del about creadas.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

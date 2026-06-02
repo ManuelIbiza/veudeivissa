@@ -1,0 +1,132 @@
+<div class="dashboard-panel">
+    <div class="dashboard-header">
+        <div>
+            <h2>Imágenes del Hero</h2>
+            <p>Gestiona las imágenes que aparecen en la sección principal de la web.</p>
+        </div>
+
+        <div class="dashboard-actions">
+            <a href="{% url 'backoffice_hero_image_create' %}" class="btn btn-primary" data-ajax-link>
+                Nueva imagen
+            </a>
+        </div>
+    </div>
+
+    {% if hero_images %}
+        <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th>Imagen</th>
+                        <th>Título interno</th>
+                        <th>Activa</th>
+                        <th>Orden</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for hero_image in hero_images %}
+                        <tr>
+                            <td>
+                                {% if hero_image.image %}
+                                    <img
+                                        src="{{ hero_image.image.url }}"
+                                        alt="{{ hero_image.title }}"
+                                        class="table-image-preview"
+                                    >
+                                {% else %}
+                                    <span class="dashboard-empty-text">Sin imagen</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if hero_image.title %}
+                                    {{ hero_image.title }}
+                                {% else %}
+                                    Imagen hero {{ hero_image.id }}
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if hero_image.is_active %}
+                                    <span class="dashboard-badge dashboard-badge-active">Sí</span>
+                                {% else %}
+                                    <span class="dashboard-badge dashboard-badge-inactive">No</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                <div class="order-controls">
+                                    <span class="order-number">{{ hero_image.display_order }}</span>
+
+                                    <div class="order-buttons" aria-label="Reordenar">
+                                        <form
+                                            method="post"
+                                            action="{% url 'backoffice_hero_image_reorder' hero_image.id 'up' %}"
+                                        >
+                                            {% csrf_token %}
+                                            <button
+                                                type="submit"
+                                                class="order-button"
+                                                title="Subir"
+                                                aria-label="Subir"
+                                                {% if forloop.first %}disabled{% endif %}
+                                            >
+                                                ↑
+                                            </button>
+                                        </form>
+
+                                        <form
+                                            method="post"
+                                            action="{% url 'backoffice_hero_image_reorder' hero_image.id 'down' %}"
+                                        >
+                                            {% csrf_token %}
+                                            <button
+                                                type="submit"
+                                                class="order-button"
+                                                title="Bajar"
+                                                aria-label="Bajar"
+                                                {% if forloop.last %}disabled{% endif %}
+                                            >
+                                                ↓
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="dashboard-table-actions">
+                                    <a
+                                        href="{% url 'backoffice_hero_image_update' hero_image.id %}"
+                                        class="table-action table-action-edit"
+                                        data-ajax-link
+                                    >
+                                        Editar
+                                    </a>
+
+                                    <form
+                                        method="post"
+                                        action="{% url 'backoffice_hero_image_delete' hero_image.id %}"
+                                        class="dashboard-delete-form"
+                                        onsubmit="return confirm('¿Seguro que quieres eliminar esta imagen?');"
+                                    >
+                                        {% csrf_token %}
+                                        <button type="submit" class="table-action table-action-delete">
+                                            Eliminar
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="dashboard-empty">
+            Todavía no hay imágenes del Hero.
+        </div>
+    {% endif %}
+</div>

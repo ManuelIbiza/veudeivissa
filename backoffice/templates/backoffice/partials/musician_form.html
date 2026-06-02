@@ -1,0 +1,199 @@
+<div class="dashboard-section">
+    <div class="dashboard-section-header">
+        <div>
+            <h2>
+                {% if form.instance.pk %}
+                    Editar músico
+                {% else %}
+                    Nuevo músico
+                {% endif %}
+            </h2>
+
+            <p class="dashboard-section-subtitle">
+                Completa la información del músico en los idiomas disponibles.
+            </p>
+        </div>
+    </div>
+
+    <section class="config-card">
+        <form
+            method="post"
+            action="{{ form_action }}"
+            enctype="multipart/form-data"
+            class="dashboard-form"
+            data-parent-url="{% url 'backoffice_musician_list' %}"
+        >
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-error">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div class="translation-form-block">
+                <div class="translation-form-block-header">
+                </div>
+
+                <div class="form-grid compact-form-grid">
+                    <div class="form-field">
+                        <label for="{{ form.name.id_for_label }}">
+                            Nombre artístico
+                        </label>
+
+                        {{ form.name }}
+                        {{ form.name.errors }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="translation-form-block">
+                <div class="translation-form-block-header">
+                    <h3>Instrumentos</h3>
+                    <p>Instrumento o especialidad del músico en cada idioma.</p>
+                </div>
+
+                <div class="form-grid compact-form-grid">
+                    <div class="form-field">
+                        <label for="{{ form.instrument.id_for_label }}">
+                            Español
+                        </label>
+
+                        {{ form.instrument }}
+                        {{ form.instrument.errors }}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="{{ form.instrument_ca.id_for_label }}">
+                            Catalán
+                        </label>
+
+                        {{ form.instrument_ca }}
+                        {{ form.instrument_ca.errors }}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="{{ form.instrument_en.id_for_label }}">
+                            Inglés
+                        </label>
+
+                        {{ form.instrument_en }}
+                        {{ form.instrument_en.errors }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="translation-form-block">
+                <div class="translation-form-block-header">
+                    <h3>Descripciones</h3>
+                    <p>Texto descriptivo del músico en cada idioma.</p>
+                </div>
+
+                <div class="form-grid compact-form-grid">
+                    <div class="form-field">
+                        <label for="{{ form.description.id_for_label }}">
+                            Español
+                        </label>
+
+                        {{ form.description }}
+                        {{ form.description.errors }}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="{{ form.description_ca.id_for_label }}">
+                            Catalán
+                        </label>
+
+                        {{ form.description_ca }}
+                        {{ form.description_ca.errors }}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="{{ form.description_en.id_for_label }}">
+                            Inglés
+                        </label>
+
+                        {{ form.description_en }}
+                        {{ form.description_en.errors }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="translation-form-block">
+                <div class="translation-form-block-header">
+                    <h3>Configuración</h3>
+                    <p>Imagen, visibilidad y orden de aparición del músico.</p>
+                </div>
+
+                <div class="media-settings-layout">
+                    <div class="media-preview-column">
+                        <span class="media-preview-label">
+                            Imagen actual
+                        </span>
+
+                        {% if form.instance.pk and form.instance.image %}
+                            <div class="current-card-image-preview">
+                                <img src="{{ form.instance.image.url }}" alt="{{ form.instance.name }}">
+                            </div>
+                        {% else %}
+                            <div class="current-card-image-preview current-card-image-preview-empty">
+                                Sin imagen
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="media-fields-column">
+                        <div class="form-field">
+                            <label for="{{ form.image.id_for_label }}">
+                                Foto
+                            </label>
+
+                            {{ form.image }}
+
+                            <p class="field-help">
+                                Selecciona una nueva imagen solo si quieres sustituir la foto actual.
+                            </p>
+
+                            {{ form.image.errors }}
+                        </div>
+
+                        <div class="form-field">
+                            <label for="{{ form.display_order.id_for_label }}">
+                                Orden
+                            </label>
+
+                            {{ form.display_order }}
+                            {{ form.display_order.errors }}
+                        </div>
+
+                        <div class="form-field">
+                            <label for="{{ form.is_active.id_for_label }}">
+                                Estado
+                            </label>
+
+                            <div class="status-checkbox-card">
+                                {{ form.is_active }}
+
+                                <label for="{{ form.is_active.id_for_label }}">
+                                    Activo
+                                </label>
+                            </div>
+
+                            {{ form.is_active.errors }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-form-actions">
+                <button type="submit" class="btn btn-primary">
+                    Guardar músico
+                </button>
+
+                <a href="{% url 'backoffice_musician_list' %}" class="btn btn-secondary" data-ajax-link>
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </section>
+</div>

@@ -1,0 +1,260 @@
+<div class="dashboard-section">
+    <div class="dashboard-section-header">
+        <div>
+            <h2>Hero</h2>
+            <p class="dashboard-section-subtitle">
+                Gestiona el texto principal y las imágenes del hero de la página de inicio.
+            </p>
+        </div>
+    </div>
+
+    <form
+        method="post"
+        action="{% url 'backoffice_hero_section' %}"
+        class="dashboard-form"
+    >
+        {% csrf_token %}
+
+        {{ form.non_field_errors }}
+
+        <div class="translation-form-block">
+            <div class="translation-form-block-header">
+                <h3>Títulos</h3>
+                <p>Texto principal que aparece destacado en el hero.</p>
+            </div>
+
+            <div class="form-grid compact-form-grid">
+                <div class="form-field">
+                    <label for="{{ form.hero_title.id_for_label }}">
+                        Español
+                    </label>
+
+                    {{ form.hero_title }}
+
+                    {% if form.hero_title.help_text %}
+                        <small>{{ form.hero_title.help_text }}</small>
+                    {% endif %}
+
+                    {% for error in form.hero_title.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-field">
+                    <label for="{{ form.hero_title_ca.id_for_label }}">
+                        Catalán
+                    </label>
+
+                    {{ form.hero_title_ca }}
+
+                    {% if form.hero_title_ca.help_text %}
+                        <small>{{ form.hero_title_ca.help_text }}</small>
+                    {% endif %}
+
+                    {% for error in form.hero_title_ca.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-field">
+                    <label for="{{ form.hero_title_en.id_for_label }}">
+                        Inglés
+                    </label>
+
+                    {{ form.hero_title_en }}
+
+                    {% if form.hero_title_en.help_text %}
+                        <small>{{ form.hero_title_en.help_text }}</small>
+                    {% endif %}
+
+                    {% for error in form.hero_title_en.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="translation-form-block">
+            <div class="translation-form-block-header">
+                <h3>Contenido / subtítulos</h3>
+                <p>Texto secundario que acompaña al título del hero.</p>
+            </div>
+
+            <div class="form-grid compact-form-grid">
+                <div class="form-field">
+                    <label for="{{ form.hero_subtitle.id_for_label }}">
+                        Español
+                    </label>
+
+                    {{ form.hero_subtitle }}
+
+                    {% if form.hero_subtitle.help_text %}
+                        <small>{{ form.hero_subtitle.help_text }}</small>
+                    {% endif %}
+
+                    {% for error in form.hero_subtitle.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-field">
+                    <label for="{{ form.hero_subtitle_ca.id_for_label }}">
+                        Catalán
+                    </label>
+
+                    {{ form.hero_subtitle_ca }}
+
+                    {% if form.hero_subtitle_ca.help_text %}
+                        <small>{{ form.hero_subtitle_ca.help_text }}</small>
+                    {% endif %}
+
+                    {% for error in form.hero_subtitle_ca.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-field">
+                    <label for="{{ form.hero_subtitle_en.id_for_label }}">
+                        Inglés
+                    </label>
+
+                    {{ form.hero_subtitle_en }}
+
+                    {% if form.hero_subtitle_en.help_text %}
+                        <small>{{ form.hero_subtitle_en.help_text }}</small>
+                    {% endif %}
+
+                    {% for error in form.hero_subtitle_en.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                Guardar contenido del hero
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="dashboard-section">
+    <div class="dashboard-section-header">
+        <div>
+            <h2>Imágenes del hero</h2>
+            <p class="dashboard-section-subtitle">
+                Ordena, activa o elimina las imágenes que aparecen en el carrusel principal.
+            </p>
+        </div>
+
+        <a href="{% url 'backoffice_hero_image_create' %}" class="btn btn-primary" data-ajax-link>
+            Nueva imagen
+        </a>
+    </div>
+
+    <div class="dashboard-table-wrapper">
+        <table class="dashboard-table">
+            <thead>
+                <tr>
+                    <th>Imagen</th>
+                    <th>Título</th>
+                    <th>Activa</th>
+                    <th>Orden</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for hero_image in hero_images %}
+                    <tr>
+                        <td>
+                            {% if hero_image.image %}
+                                <img
+                                    src="{{ hero_image.image.url }}"
+                                    alt="{{ hero_image.title }}"
+                                    class="backoffice-thumb"
+                                >
+                            {% else %}
+                                Sin imagen
+                            {% endif %}
+                        </td>
+
+                        <td>{{ hero_image.title }}</td>
+
+                        <td>
+                            {% if hero_image.is_active %}
+                                Sí
+                            {% else %}
+                                No
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <div class="order-controls">
+                                <span class="order-number">{{ hero_image.display_order }}</span>
+
+                                <div class="order-buttons" aria-label="Reordenar">
+                                    <form
+                                        method="post"
+                                        action="{% url 'backoffice_hero_image_reorder' hero_image.id 'up' %}"
+                                    >
+                                        {% csrf_token %}
+                                        <button
+                                            type="submit"
+                                            class="order-button"
+                                            title="Subir"
+                                            aria-label="Subir"
+                                            {% if forloop.first %}disabled{% endif %}
+                                        >
+                                            ↑
+                                        </button>
+                                    </form>
+
+                                    <form
+                                        method="post"
+                                        action="{% url 'backoffice_hero_image_reorder' hero_image.id 'down' %}"
+                                    >
+                                        {% csrf_token %}
+                                        <button
+                                            type="submit"
+                                            class="order-button"
+                                            title="Bajar"
+                                            aria-label="Bajar"
+                                            {% if forloop.last %}disabled{% endif %}
+                                        >
+                                            ↓
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <a href="{% url 'backoffice_hero_image_update' hero_image.id %}" data-ajax-link>
+                                Editar
+                            </a>
+
+                            ·
+
+                            <form
+                                method="post"
+                                action="{% url 'backoffice_hero_image_delete' hero_image.id %}"
+                                data-confirm="¿Eliminar esta imagen?"
+                            >
+                                {% csrf_token %}
+                                <button type="submit">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">
+                            Todavía no hay imágenes del hero creadas.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

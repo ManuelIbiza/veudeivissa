@@ -1,0 +1,92 @@
+<div class="dashboard-section">
+    <div class="dashboard-section-header">
+        <h2>{{ form_title }}</h2>
+
+        <a href="{% url 'backoffice_about_section' %}" class="btn btn-secondary" data-ajax-link>
+            Volver
+        </a>
+    </div>
+
+    <form method="post" action="{{ form_action }}" enctype="multipart/form-data" class="dashboard-form image-preview-form" data-parent-url="{% url 'backoffice_about_section' %}">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-error">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <div class="image-form-layout">
+            <div class="image-form-fields">
+                <div class="config-field">
+                    {{ form.title.label_tag }}
+                    {{ form.title }}
+                    {{ form.title.errors }}
+                </div>
+
+                <div class="config-field">
+                    {{ form.image.label_tag }}
+                    {{ form.image }}
+                    <p class="field-help">
+                        Recomendado: <strong>1400 x 1000 px</strong> aprox. Imagen horizontal o rectangular, limpia y sin bordes añadidos.
+                    </p>
+                    {{ form.image.errors }}
+                </div>
+
+                <div class="config-field">
+                    <label>Estado</label>
+
+                    <div class="status-checkbox-card">
+                        {{ form.is_active }}
+
+                        <label for="{{ form.is_active.id_for_label }}">
+                            Activo
+                        </label>
+                    </div>
+
+                    {{ form.is_active.errors }}
+                </div>
+
+                <div class="config-field">
+                    {{ form.display_order.label_tag }}
+                    {{ form.display_order }}
+                    {{ form.display_order.errors }}
+                </div>
+            </div>
+
+            <aside class="image-preview-panel">
+                <span class="image-preview-kicker">Previsualización</span>
+                <h3>Imagen actual</h3>
+
+                {% if about_image and about_image.image %}
+                    <img
+                        src="{{ about_image.image.url }}"
+                        alt="{% if about_image.title %}{{ about_image.title }}{% else %}Imagen about actual{% endif %}"
+                        class="image-preview image-preview-landscape"
+                    >
+                    <p>
+                        Esta imagen se usa en la sección About de la página principal.
+                        Si subes una nueva, se sustituirá al guardar.
+                    </p>
+                {% else %}
+                    <div class="image-preview-empty image-preview-empty-landscape">
+                        Sin imagen actual
+                    </div>
+                    <p>
+                        Cuando guardes una imagen about, aparecerá aquí al editarla.
+                    </p>
+                {% endif %}
+            </aside>
+        </div>
+
+        <div class="dashboard-form-actions">
+            <button type="submit" class="btn btn-primary">
+                Guardar
+            </button>
+
+            <a href="{% url 'backoffice_about_section' %}" class="btn btn-secondary" data-ajax-link>
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
