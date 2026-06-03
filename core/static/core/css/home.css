@@ -1749,7 +1749,7 @@ button {
     }
 
     .book-page-image img {
-        object-position: center top;
+        object-position: center 30%;
     }
 
     .music-player-card {
