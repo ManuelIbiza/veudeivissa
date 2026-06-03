@@ -16,12 +16,29 @@ username = os.environ.get('DJANGO_SUPERUSER_USERNAME')
 email = os.environ.get('DJANGO_SUPERUSER_EMAIL')
 password = os.environ.get('DJANGO_SUPERUSER_PASSWORD')
 
+print('Comprobando variables de superusuario...')
+
+if not username:
+    print('Falta DJANGO_SUPERUSER_USERNAME')
+
+if not email:
+    print('Falta DJANGO_SUPERUSER_EMAIL')
+
+if not password:
+    print('Falta DJANGO_SUPERUSER_PASSWORD')
+
 if username and email and password:
-    if not User.objects.filter(username=username).exists():
-        User.objects.create_superuser(username=username, email=email, password=password)
-        print('Superusuario creado correctamente.')
+    user = User.objects.filter(username=username).first()
+
+    if user:
+        print('Superusuario ya existe.')
     else:
-        print('El superusuario ya existe.')
+        User.objects.create_superuser(
+            username=username,
+            email=email,
+            password=password
+        )
+        print('Superusuario creado correctamente.')
 else:
     print('Variables de superusuario no configuradas.')
 "
