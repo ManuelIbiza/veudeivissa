@@ -18,15 +18,6 @@ password = os.environ.get('DJANGO_SUPERUSER_PASSWORD')
 
 print('Comprobando variables de superusuario...')
 
-if not username:
-    print('Falta DJANGO_SUPERUSER_USERNAME')
-
-if not email:
-    print('Falta DJANGO_SUPERUSER_EMAIL')
-
-if not password:
-    print('Falta DJANGO_SUPERUSER_PASSWORD')
-
 if username and email and password:
     user = User.objects.filter(username=username).first()
 
@@ -42,3 +33,11 @@ if username and email and password:
 else:
     print('Variables de superusuario no configuradas.')
 "
+
+if [ -f datos_render.json ]; then
+    echo "Importando datos_render.json..."
+    python manage.py loaddata datos_render.json
+    echo "Datos importados correctamente."
+else
+    echo "No se encontró datos_render.json."
+fi
