@@ -19,7 +19,6 @@ Jinja2==3.1.6
 keyboard==0.13.5
 MarkupSafe==3.0.3
 msgspec==0.20.0
-mysqlclient @ file:///C:/Users/m88pe/Downloads/mysqlclient-2.2.8-cp314-cp314-win_amd64.whl#sha256=9bed7c8d3b629bdc09e17fb628d5b3b0a5fd1f12b09432b464b9126c727bedc0
 packaging==25.0
 pillow==12.1.1
 pipenv==2026.0.3
