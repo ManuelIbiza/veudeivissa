@@ -1,22 +1,27 @@
-import os
 from pathlib import Path
+import os
+import dj_database_url
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 SECRET_KEY = os.environ.get(
-    'DJANGO_SECRET_KEY',
-    'dev-secret-key-only-for-local-development'
+    "SECRET_KEY",
+    "clave-local-solo-para-desarrollo-no-usar-en-produccion"
 )
 
-DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
+DEBUG = os.environ.get("RENDER") is None
 
-ALLOWED_HOSTS = os.environ.get(
-    'DJANGO_ALLOWED_HOSTS',
-    '127.0.0.1,localhost'
-).split(',')
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+]
 
+RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
+
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -33,16 +38,15 @@ INSTALLED_APPS = [
 
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-
 
 ROOT_URLCONF = 'projecte_veu.urls'
 
@@ -69,16 +73,24 @@ TEMPLATES = [
 WSGI_APPLICATION = 'projecte_veu.wsgi.application'
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.mysql'),
-        'NAME': os.environ.get('DB_NAME', 'veudeivissa'),
-        'USER': os.environ.get('DB_USER', 'root'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', '12345678'),
-        'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
-        'PORT': os.environ.get('DB_PORT', '3306'),
+if os.environ.get("RENDER"):
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=os.environ.get("DATABASE_URL"),
+            conn_max_age=600,
+        )
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": "veudeivissa",
+            "USER": "root",
+            "PASSWORD": "ManuelIbz",
+            "HOST": "localhost",
+            "PORT": "3306",
+        }
+    }
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -117,11 +129,18 @@ USE_I18N = True
 USE_TZ = True
 
 
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_URL = "/static/"
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -148,3 +167,12 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True') == 'True'
 EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', 'False') == 'True'
+
+if os.environ.get("RENDER"):
+    CSRF_TRUSTED_ORIGINS = [
+        f"https://{RENDER_EXTERNAL_HOSTNAME}",
+    ]
+
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
