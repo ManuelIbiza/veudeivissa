@@ -371,9 +371,6 @@
     <footer id="contact" class="site-footer">
         <div class="container footer-content">
             <div class="footer-brand">
-                {% if config and config.logo %}
-                    <img src="{{ config.logo.url }}" alt="{% if config.site_name %}{{ config.site_name }}{% else %}Veu d'Eivissa{% endif %}" class="footer-logo">
-                {% endif %}
 
                 <h3>{% if config and config.site_name %}{{ config.site_name }}{% else %}Veu d'Eivissa{% endif %}</h3>
             </div>
