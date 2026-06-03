@@ -1626,7 +1626,8 @@ button {
     }
 
     .musicians-grid {
-        grid-template-columns: repeat(auto-fit, 270px);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
     }
 
     .reservation-form__row {
@@ -1825,15 +1826,63 @@ button {
     }
 
     .musicians-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+        justify-content: center;
     }
 
-    .flip-card,
+    .flip-card {
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+        aspect-ratio: 270 / 390;
+        height: auto;
+        min-height: 0;
+        max-height: none;
+        flex: none;
+    }
+
     .flip-card-inner,
     .flip-card-face {
         width: 100%;
         min-width: 0;
         max-width: none;
+        height: 100%;
+        min-height: 0;
+        max-height: none;
+    }
+
+    .flip-card-face {
+        border-radius: 18px;
+    }
+
+    .flip-card-front-caption {
+        left: 0.75rem;
+        right: 0.75rem;
+        bottom: 0.75rem;
+    }
+
+    .flip-card-front-caption h3 {
+        font-size: 0.85rem;
+        line-height: 1.15;
+    }
+
+    .flip-card-back {
+        padding: 0.85rem;
+    }
+
+    .flip-card-back-content {
+        gap: 0.45rem;
+    }
+
+    .flip-card-back h3 {
+        font-size: 0.95rem;
+        line-height: 1.15;
+    }
+
+    .flip-card-back p {
+        font-size: 0.72rem;
+        line-height: 1.45;
     }
 
     .floating-reservation,
