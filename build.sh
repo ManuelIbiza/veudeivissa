@@ -41,3 +41,19 @@ if [ -f datos_render.json ]; then
 else
     echo "No se encontró datos_render.json."
 fi
+
+python manage.py shell -c "
+from core.models import SiteConfiguration, HeroImage, AboutImage, EventFormat, MusicTrack, Reservation, ContactMessage
+from musicians.models import Musician
+
+print('--- CONTEO EN BASE DE DATOS RENDER ---')
+print('SiteConfiguration:', SiteConfiguration.objects.count())
+print('HeroImage:', HeroImage.objects.count())
+print('AboutImage:', AboutImage.objects.count())
+print('EventFormat:', EventFormat.objects.count())
+print('MusicTrack:', MusicTrack.objects.count())
+print('Reservation:', Reservation.objects.count())
+print('ContactMessage:', ContactMessage.objects.count())
+print('Musician:', Musician.objects.count())
+print('--------------------------------------')
+"
