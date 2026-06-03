@@ -525,7 +525,8 @@ button {
 .book-page-image img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
+    object-position: center;
     filter: saturate(88%) brightness(1.02);
 }
 
@@ -1745,6 +1746,10 @@ button {
     .book-page-copy p {
         font-size: 0.88rem;
         line-height: 1.65;
+    }
+
+    .book-page-image img {
+        object-position: center top;
     }
 
     .music-player-card {
