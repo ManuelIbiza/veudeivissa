@@ -1571,17 +1571,17 @@ button {
 
     .hero-content {
         padding-top: 5rem;
-    }
 
+        }
     .book-shell {
         min-height: auto;
-        max-width: 620px;
+        max-width: 520px;
     }
 
     .book-static {
         grid-template-columns: 1fr;
         min-height: auto;
-        border-radius: 28px;
+        border-radius: 24px;
     }
 
     .book-static-left,
@@ -1592,13 +1592,13 @@ button {
     }
 
     .book-static-left {
-        border-radius: 28px 28px 0 0;
+        border-radius: 24px 24px 0 0;
         border-bottom: none;
     }
 
     .book-static-right {
-        border-radius: 0 0 28px 28px;
-        height: 360px;
+        border-radius: 0 0 24px 24px;
+        height: 290px;
     }
 
     .book-static-left::after,
@@ -1609,7 +1609,7 @@ button {
     }
 
     .book-page-copy {
-        padding: 2.4rem 1.8rem;
+        padding: 1.9rem 1.45rem;
     }
 
     .book-page-image::after {
@@ -1724,20 +1724,27 @@ button {
     }
 
     .book-static-right {
-        height: 300px;
+        height: 245px;
     }
 
     .book-page-copy {
-        padding: 2rem 1.4rem;
+        padding: 1.55rem 1.15rem;
+    }
+
+    .book-page-copy-label {
+        margin-bottom: 0.7rem;
+        font-size: 0.68rem;
+        letter-spacing: 0.12rem;
     }
 
     .book-page-copy h3 {
-        font-size: 1.85rem;
+        margin-bottom: 0.85rem;
+        font-size: 1.55rem;
     }
 
     .book-page-copy p {
-        font-size: 0.98rem;
-        line-height: 1.75;
+        font-size: 0.88rem;
+        line-height: 1.65;
     }
 
     .music-player-card {
@@ -1829,6 +1836,46 @@ button {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 0.75rem;
         justify-content: center;
+    }
+
+    .book-shell {
+        max-width: 340px;
+    }
+
+    .book-static {
+        border-radius: 20px;
+    }
+
+    .book-static-left {
+        border-radius: 20px 20px 0 0;
+    }
+
+    .book-static-right {
+        height: 220px;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .book-page-copy {
+        padding: 1.35rem 1rem;
+    }
+
+    .book-page-copy h3 {
+        font-size: 1.35rem;
+    }
+
+    .book-page-copy p {
+        font-size: 0.82rem;
+        line-height: 1.55;
+    }
+
+    .formats-book-controls {
+        margin-top: 0.9rem;
+    }
+
+    .book-control {
+        width: 42px;
+        height: 42px;
+        font-size: 1rem;
     }
 
     .flip-card {
