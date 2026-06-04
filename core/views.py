@@ -66,6 +66,30 @@ def get_reservation_value(value, fallback=None):
 
     return fallback
 
+def get_first_hero_background(hero_images):
+    return hero_images.first()
+
+
+def get_image_bytes_from_field(image_field):
+    if not image_field:
+        return None
+
+    try:
+        if hasattr(image_field, 'path') and os.path.exists(image_field.path):
+            with open(image_field.path, 'rb') as image_file:
+                return image_file.read()
+    except Exception:
+        pass
+
+    try:
+        image_field.open('rb')
+        image_bytes = image_field.read()
+        image_field.close()
+
+        return image_bytes
+    except Exception:
+        logger.exception('No se pudo leer la imagen desde el almacenamiento.')
+        return None
 
 def build_reservation_text(reservation, config):
     event_time = _('No indicada')
@@ -146,8 +170,12 @@ def build_reservation_text(reservation, config):
     ]
 
 
-def draw_cover_image(pdf, image_path, page_width, page_height):
-    image_reader = ImageReader(image_path)
+def draw_cover_image(pdf, image_source, page_width, page_height):
+    if isinstance(image_source, bytes):
+        image_reader = ImageReader(BytesIO(image_source))
+    else:
+        image_reader = ImageReader(image_source)
+
     image_width, image_height = image_reader.getSize()
 
     image_ratio = image_width / image_height
@@ -178,10 +206,12 @@ def draw_cover_image(pdf, image_path, page_width, page_height):
 def draw_pdf_background(pdf, background_image, page_width, page_height):
     if background_image and background_image.image:
         try:
-            if os.path.exists(background_image.image.path):
+            image_bytes = get_image_bytes_from_field(background_image.image)
+
+            if image_bytes:
                 draw_cover_image(
                     pdf,
-                    background_image.image.path,
+                    image_bytes,
                     page_width,
                     page_height
                 )
@@ -454,8 +484,10 @@ def generate_reservation_preview_image(reservation, config, background_image=Non
 
     if background_image and background_image.image:
         try:
-            if os.path.exists(background_image.image.path):
-                background = Image.open(background_image.image.path).convert('RGB')
+            image_bytes = get_image_bytes_from_field(background_image.image)
+
+            if image_bytes:
+                background = Image.open(BytesIO(image_bytes)).convert('RGB')
                 background = resize_image_to_cover(background, width, height)
                 base.paste(background, (0, 0))
         except Exception:
@@ -702,7 +734,7 @@ def home(request):
         'id'
     )
 
-    background_image = hero_images.first()
+    background_image = get_first_hero_background(hero_images)
 
     if request.method == 'POST':
         reservation_form = ReservationForm(request.POST)
