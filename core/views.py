@@ -7,6 +7,7 @@ from io import BytesIO
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import EmailMessage
+from django.http import FileResponse, Http404
 from django.shortcuts import redirect, render
 from django.utils import timezone, translation
 from django.utils.translation import gettext as _
@@ -23,6 +24,8 @@ from .models import AboutImage, EventFormat, HeroImage, MusicTrack, SiteConfigur
 
 
 logger = logging.getLogger(__name__)
+
+RESERVATION_PDF_SESSION_KEY = 'latest_reservation_pdf_filename'
 
 
 def get_selected_language(request):
@@ -357,7 +360,9 @@ def send_reservation_email_with_pdf(
     reservation,
     config,
     background_image=None,
-    language_code=None
+    language_code=None,
+    pdf_path=None,
+    pdf_filename=None
 ):
     if language_code is None:
         language_code = settings.LANGUAGE_CODE
@@ -382,11 +387,15 @@ def send_reservation_email_with_pdf(
             + f'\n{config.site_name}'
         )
 
-        file_path, filename = save_reservation_pdf(
-            reservation,
-            config,
-            background_image
-        )
+        if pdf_path and pdf_filename:
+            file_path = pdf_path
+            filename = pdf_filename
+        else:
+            file_path, filename = save_reservation_pdf(
+                reservation,
+                config,
+                background_image
+            )
 
     email = EmailMessage(
         subject=subject,
@@ -403,6 +412,31 @@ def send_reservation_email_with_pdf(
         )
 
     email.send(fail_silently=False)
+
+
+def reservation_pdf_preview(request):
+    filename = request.session.get(RESERVATION_PDF_SESSION_KEY)
+
+    if not filename:
+        raise Http404(_('No hay ningún PDF de reserva disponible.'))
+
+    safe_filename = os.path.basename(filename)
+
+    if safe_filename != filename or not safe_filename.lower().endswith('.pdf'):
+        raise Http404(_('PDF no válido.'))
+
+    file_path = os.path.join(settings.BASE_DIR, 'private', 'reservas', safe_filename)
+
+    if not os.path.exists(file_path):
+        raise Http404(_('El PDF de la reserva ya no está disponible.'))
+
+    response = FileResponse(
+        open(file_path, 'rb'),
+        content_type='application/pdf'
+    )
+    response['Content-Disposition'] = f'inline; filename="{safe_filename}"'
+
+    return response
 
 
 def home(request):
@@ -453,12 +487,23 @@ def home(request):
         if reservation_form.is_valid():
             reservation = reservation_form.save()
 
+            with translation.override(selected_language):
+                reservation_pdf_path, reservation_pdf_filename = save_reservation_pdf(
+                    reservation,
+                    config,
+                    background_image
+                )
+
+            request.session[RESERVATION_PDF_SESSION_KEY] = reservation_pdf_filename
+
             try:
                 send_reservation_email_with_pdf(
                     reservation,
                     config,
                     background_image,
-                    selected_language
+                    selected_language,
+                    reservation_pdf_path,
+                    reservation_pdf_filename
                 )
 
                 messages.success(
@@ -535,6 +580,7 @@ def home(request):
             'about_images_payload': about_images_payload,
             'music_tracks': music_tracks,
             'reservation_form': reservation_form,
+            'reservation_pdf_available': bool(request.session.get(RESERVATION_PDF_SESSION_KEY)),
             'current_year': timezone.now().year,
         }
     )

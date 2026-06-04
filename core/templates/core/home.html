@@ -358,6 +358,23 @@
                             </div>
                         {% endfor %}
 
+                        {% if reservation_pdf_available %}
+                            <div class="reservation-pdf-preview">
+                                <div class="reservation-pdf-preview__header">
+                                    <span>{% trans "Documento generado" %}</span>
+                                    <a href="{% url 'reservation_pdf_preview' %}" target="_blank" rel="noopener">
+                                        {% trans "Abrir PDF" %}
+                                    </a>
+                                </div>
+
+                                <iframe
+                                    src="{% url 'reservation_pdf_preview' %}"
+                                    title="{% trans 'Resumen de reserva en PDF' %}"
+                                    class="reservation-pdf-preview__frame">
+                                </iframe>
+                            </div>
+                        {% endif %}
+
                         <button type="button" class="btn btn-primary reservation-feedback-modal__button js-close-feedback">
                             {% trans "Entendido" %}
                         </button>
