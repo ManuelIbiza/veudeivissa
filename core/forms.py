@@ -158,6 +158,10 @@ class ReservationForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        today = timezone.localdate().isoformat()
+
+        self.fields['event_date'].widget.attrs['min'] = today
+
         self.fields['preferred_format'].queryset = EventFormat.objects.filter(
             is_active=True
         ).order_by(
@@ -218,7 +222,9 @@ class ReservationForm(forms.ModelForm):
         event_date = self.cleaned_data.get('event_date')
 
         if event_date and event_date < timezone.localdate():
-            raise ValidationError(_('La fecha del evento no puede ser anterior a hoy.'))
+            raise ValidationError(
+                _('No puedes hacer una reserva para una fecha anterior a hoy.')
+            )
 
         return event_date
 
