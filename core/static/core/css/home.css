@@ -1214,12 +1214,25 @@ button {
     text-decoration: underline;
 }
 
-.reservation-pdf-preview__frame {
+.reservation-preview-image-wrapper {
+    max-height: min(68vh, 720px);
+    overflow: auto;
+    background: #f7f2eb;
+}
+
+.reservation-preview-image {
     display: block;
     width: 100%;
-    height: min(62vh, 620px);
-    border: 0;
+    height: auto;
     background: #f7f2eb;
+}
+
+.reservation-pdf-preview__fallback {
+    margin: 0;
+    padding: 1.4rem;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
 }
 
 .reservation-feedback-modal__button {

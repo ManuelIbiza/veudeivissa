@@ -17,6 +17,13 @@ from reportlab.lib.units import cm
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
 
+try:
+    from PIL import Image, ImageDraw, ImageFont
+except ImportError:
+    Image = None
+    ImageDraw = None
+    ImageFont = None
+
 from musicians.models import Musician
 
 from .forms import ReservationForm
@@ -26,6 +33,7 @@ from .models import AboutImage, EventFormat, HeroImage, MusicTrack, SiteConfigur
 logger = logging.getLogger(__name__)
 
 RESERVATION_PDF_SESSION_KEY = 'latest_reservation_pdf_filename'
+RESERVATION_PREVIEW_SESSION_KEY = 'latest_reservation_preview_filename'
 
 
 def get_selected_language(request):
@@ -356,6 +364,196 @@ def save_reservation_pdf(reservation, config, background_image=None):
     return file_path, filename
 
 
+def load_preview_font(size, bold=False):
+    if ImageFont is None:
+        return None
+
+    font_candidates = []
+
+    if bold:
+        font_candidates.extend([
+            '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf',
+            '/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf',
+            'arialbd.ttf',
+        ])
+    else:
+        font_candidates.extend([
+            '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
+            '/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf',
+            'arial.ttf',
+        ])
+
+    for font_path in font_candidates:
+        try:
+            return ImageFont.truetype(font_path, size)
+        except Exception:
+            continue
+
+    return ImageFont.load_default()
+
+
+def resize_image_to_cover(image, target_width, target_height):
+    image_width, image_height = image.size
+    image_ratio = image_width / image_height
+    target_ratio = target_width / target_height
+
+    if image_ratio > target_ratio:
+        new_height = target_height
+        new_width = int(target_height * image_ratio)
+    else:
+        new_width = target_width
+        new_height = int(target_width / image_ratio)
+
+    image = image.resize((new_width, new_height), Image.LANCZOS)
+
+    left = (new_width - target_width) // 2
+    top = (new_height - target_height) // 2
+
+    return image.crop((left, top, left + target_width, top + target_height))
+
+
+def draw_preview_wrapped_text(draw, text, x, y, font, fill, max_width, line_spacing=10):
+    if not text:
+        return y + 28
+
+    words = str(text).split()
+    lines = []
+    current_line = ''
+
+    for word in words:
+        test_line = f'{current_line} {word}'.strip()
+        bbox = draw.textbbox((x, y), test_line, font=font)
+        line_width = bbox[2] - bbox[0]
+
+        if line_width <= max_width:
+            current_line = test_line
+        else:
+            if current_line:
+                lines.append(current_line)
+            current_line = word
+
+    if current_line:
+        lines.append(current_line)
+
+    for line in lines:
+        draw.text((x, y), line, font=font, fill=fill)
+        bbox = draw.textbbox((x, y), line, font=font)
+        y += (bbox[3] - bbox[1]) + line_spacing
+
+    return y
+
+
+def generate_reservation_preview_image(reservation, config, background_image=None):
+    if Image is None:
+        return None
+
+    width = 1240
+    height = 1754
+
+    base = Image.new('RGB', (width, height), '#f7f2eb')
+
+    if background_image and background_image.image:
+        try:
+            if os.path.exists(background_image.image.path):
+                background = Image.open(background_image.image.path).convert('RGB')
+                background = resize_image_to_cover(background, width, height)
+                base.paste(background, (0, 0))
+        except Exception:
+            logger.exception('No se pudo dibujar la imagen de fondo de la previsualización.')
+
+    overlay = Image.new('RGBA', (width, height), (255, 253, 250, 225))
+    margin = 90
+    content_box = Image.new('RGBA', (width, height), (0, 0, 0, 0))
+    content_draw = ImageDraw.Draw(content_box)
+    content_draw.rounded_rectangle(
+        (margin, margin, width - margin, height - margin),
+        radius=28,
+        fill=(255, 253, 250, 232),
+        outline=(211, 197, 178, 160),
+        width=2
+    )
+    base = Image.alpha_composite(base.convert('RGBA'), overlay)
+    base = Image.alpha_composite(base, content_box)
+
+    draw = ImageDraw.Draw(base)
+
+    title_font = load_preview_font(48, bold=True)
+    subtitle_font = load_preview_font(34, bold=True)
+    body_font = load_preview_font(25)
+    body_bold_font = load_preview_font(25, bold=True)
+    small_font = load_preview_font(22)
+
+    text_color = '#403a34'
+    accent_color = '#a88f76'
+    x = 145
+    y = 140
+    max_width = width - (x * 2)
+
+    if config.logo:
+        try:
+            if os.path.exists(config.logo.path):
+                logo = Image.open(config.logo.path).convert('RGBA')
+                logo.thumbnail((260, 120), Image.LANCZOS)
+                base.alpha_composite(logo, (x, y))
+                y += logo.height + 35
+        except Exception:
+            logger.exception('No se pudo dibujar el logo en la previsualización.')
+
+    draw.text((x, y), config.site_name, font=title_font, fill=text_color)
+    y += 70
+    draw.text((x, y), _('Confirmación de solicitud de reserva'), font=subtitle_font, fill=accent_color)
+    y += 80
+
+    lines = build_reservation_text(reservation, config)
+
+    for line in lines:
+        if line in [_('Resumen de la reserva:'), _('Mensaje:')]:
+            y += 14
+            y = draw_preview_wrapped_text(draw, line, x, y, body_bold_font, text_color, max_width, 13)
+        elif line == '':
+            y += 24
+        else:
+            y = draw_preview_wrapped_text(draw, line, x, y, body_font, text_color, max_width, 12)
+
+        if y > height - 180:
+            break
+
+    draw.text(
+        (x, height - 155),
+        _('Documento generado automáticamente.'),
+        font=small_font,
+        fill=accent_color
+    )
+
+    output = BytesIO()
+    base.convert('RGB').save(output, format='PNG', optimize=True)
+    output.seek(0)
+
+    return output
+
+
+def save_reservation_preview_image(reservation, config, background_image=None):
+    preview_buffer = generate_reservation_preview_image(
+        reservation,
+        config,
+        background_image
+    )
+
+    if preview_buffer is None:
+        return None, None
+
+    folder_path = os.path.join(settings.BASE_DIR, 'private', 'reservas')
+    os.makedirs(folder_path, exist_ok=True)
+
+    filename = f'reserva-{reservation.id}-{uuid.uuid4().hex}.png'
+    file_path = os.path.join(folder_path, filename)
+
+    with open(file_path, 'wb') as image_file:
+        image_file.write(preview_buffer.getvalue())
+
+    return file_path, filename
+
+
 def send_reservation_email_with_pdf(
     reservation,
     config,
@@ -439,6 +637,31 @@ def reservation_pdf_preview(request):
     return response
 
 
+def reservation_preview_image(request):
+    filename = request.session.get(RESERVATION_PREVIEW_SESSION_KEY)
+
+    if not filename:
+        raise Http404(_('No hay ninguna imagen de reserva disponible.'))
+
+    safe_filename = os.path.basename(filename)
+
+    if safe_filename != filename or not safe_filename.lower().endswith('.png'):
+        raise Http404(_('Imagen no válida.'))
+
+    file_path = os.path.join(settings.BASE_DIR, 'private', 'reservas', safe_filename)
+
+    if not os.path.exists(file_path):
+        raise Http404(_('La imagen de la reserva ya no está disponible.'))
+
+    response = FileResponse(
+        open(file_path, 'rb'),
+        content_type='image/png'
+    )
+    response['Content-Disposition'] = f'inline; filename="{safe_filename}"'
+
+    return response
+
+
 def home(request):
     selected_language = get_selected_language(request)
 
@@ -493,8 +716,18 @@ def home(request):
                     config,
                     background_image
                 )
+                reservation_preview_path, reservation_preview_filename = save_reservation_preview_image(
+                    reservation,
+                    config,
+                    background_image
+                )
 
             request.session[RESERVATION_PDF_SESSION_KEY] = reservation_pdf_filename
+
+            if reservation_preview_filename:
+                request.session[RESERVATION_PREVIEW_SESSION_KEY] = reservation_preview_filename
+            else:
+                request.session.pop(RESERVATION_PREVIEW_SESSION_KEY, None)
 
             try:
                 send_reservation_email_with_pdf(
@@ -517,11 +750,6 @@ def home(request):
                 messages.success(
                     request,
                     _('Tu solicitud de reserva se ha enviado correctamente. Te contactaremos lo antes posible.')
-                )
-
-                messages.warning(
-                    request,
-                    _('La reserva se ha guardado, pero no se pudo enviar el email con el PDF.')
                 )
 
             response = redirect('home')
@@ -581,6 +809,7 @@ def home(request):
             'music_tracks': music_tracks,
             'reservation_form': reservation_form,
             'reservation_pdf_available': bool(request.session.get(RESERVATION_PDF_SESSION_KEY)),
+            'reservation_preview_available': bool(request.session.get(RESERVATION_PREVIEW_SESSION_KEY)),
             'current_year': timezone.now().year,
         }
     )

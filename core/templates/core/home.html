@@ -358,7 +358,27 @@
                             </div>
                         {% endfor %}
 
-                        {% if reservation_pdf_available %}
+                        {% if reservation_preview_available %}
+                            <div class="reservation-pdf-preview">
+                                <div class="reservation-pdf-preview__header">
+                                    <span>{% trans "Documento generado" %}</span>
+
+                                    {% if reservation_pdf_available %}
+                                        <a href="{% url 'reservation_pdf_preview' %}" target="_blank" rel="noopener">
+                                            {% trans "Abrir PDF" %}
+                                        </a>
+                                    {% endif %}
+                                </div>
+
+                                <div class="reservation-preview-image-wrapper">
+                                    <img
+                                        src="{% url 'reservation_preview_image' %}"
+                                        alt="{% trans 'Resumen de reserva generado' %}"
+                                        class="reservation-preview-image"
+                                    >
+                                </div>
+                            </div>
+                        {% elif reservation_pdf_available %}
                             <div class="reservation-pdf-preview">
                                 <div class="reservation-pdf-preview__header">
                                     <span>{% trans "Documento generado" %}</span>
@@ -367,11 +387,9 @@
                                     </a>
                                 </div>
 
-                                <iframe
-                                    src="{% url 'reservation_pdf_preview' %}"
-                                    title="{% trans 'Resumen de reserva en PDF' %}"
-                                    class="reservation-pdf-preview__frame">
-                                </iframe>
+                                <p class="reservation-pdf-preview__fallback">
+                                    {% trans "El documento se ha generado correctamente. Puedes abrirlo desde el botón superior." %}
+                                </p>
                             </div>
                         {% endif %}
 
@@ -388,7 +406,6 @@
     <footer id="contact" class="site-footer">
         <div class="container footer-content">
             <div class="footer-brand">
-
                 <h3>{% if config and config.site_name %}{{ config.site_name }}{% else %}Veu d'Eivissa{% endif %}</h3>
             </div>
 
