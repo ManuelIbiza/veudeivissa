@@ -243,10 +243,12 @@ def draw_pdf_logo(pdf, config, x, y):
         return y
 
     try:
-        if not os.path.exists(config.logo.path):
+        logo_bytes = get_image_bytes_from_field(config.logo)
+
+        if not logo_bytes:
             return y
 
-        logo_reader = ImageReader(config.logo.path)
+        logo_reader = ImageReader(BytesIO(logo_bytes))
         logo_width, logo_height = logo_reader.getSize()
 
         max_width = 4.2 * cm
@@ -523,11 +525,14 @@ def generate_reservation_preview_image(reservation, config, background_image=Non
 
     if config.logo:
         try:
-            if os.path.exists(config.logo.path):
-                logo = Image.open(config.logo.path).convert('RGBA')
+            logo_bytes = get_image_bytes_from_field(config.logo)
+
+            if logo_bytes:
+                logo = Image.open(BytesIO(logo_bytes)).convert('RGBA')
                 logo.thumbnail((260, 120), Image.LANCZOS)
                 base.alpha_composite(logo, (x, y))
                 y += logo.height + 35
+
         except Exception:
             logger.exception('No se pudo dibujar el logo en la previsualización.')
 
