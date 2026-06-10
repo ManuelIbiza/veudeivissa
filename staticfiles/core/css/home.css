@@ -1,3 +1,5 @@
+/* //Variables y estilos generales// */
+
 :root {
     --bg-main: #f5f0e8;
     --bg-soft: #efe7dc;
@@ -99,6 +101,8 @@ button {
     color: var(--text-soft);
     font-size: 1.05rem;
 }
+
+/* //Cabecera y navegación// */
 
 .site-header {
     position: sticky;
@@ -223,6 +227,8 @@ button {
     border-radius: 999px;
 }
 
+/* //Sección Hero// */
+
 .hero-section {
     position: relative;
     min-height: 92vh;
@@ -318,25 +324,7 @@ button {
     transform: translateY(-2px);
 }
 
-.home-messages-section {
-    padding: 1.5rem 0 0;
-    background: var(--bg-main);
-}
-
-.home-message {
-    padding: 1rem 1.25rem;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-    background: var(--bg-card);
-    color: var(--text-main);
-    box-shadow: var(--shadow-soft);
-}
-
-.home-message-success {
-    border-color: rgba(46, 125, 50, 0.25);
-    background: rgba(232, 245, 233, 0.85);
-    color: #2e5f34;
-}
+/* //Sección About// */
 
 .about-section {
     background: var(--bg-main);
@@ -384,6 +372,7 @@ button {
     line-height: 1.95;
 }
 
+/* //Sección Formats// */
 .formats-section {
     background: var(--bg-soft);
 }
@@ -526,6 +515,7 @@ button {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
     filter: saturate(88%) brightness(1.02);
 }
 
@@ -720,6 +710,8 @@ button {
     transform: translateY(0);
 }
 
+/* //Sección Músicos// */
+
 .musicians-section {
     background: var(--bg-main);
 }
@@ -855,6 +847,8 @@ button {
     line-height: 1.7;
 }
 
+/* //Sección Música// */
+
 .music-section {
     background: var(--bg-soft);
 }
@@ -935,6 +929,7 @@ button {
     transform: translateY(-2px);
 }
 
+/* //Modal reserva// */
 .reservation-modal {
     position: fixed;
     inset: 0;
@@ -1143,12 +1138,13 @@ button {
     cursor: pointer;
 }
 
+/* //Modal Respuesta// */
 .reservation-feedback-modal {
     z-index: 2100;
 }
 
 .reservation-feedback-modal__content {
-    width: min(100%, 520px);
+    width: min(96vw, 900px);
 }
 
 .reservation-feedback-modal__body {
@@ -1180,11 +1176,66 @@ button {
     color: #9d4b43;
 }
 
+.reservation-pdf-preview {
+    margin: 1.25rem 0 1.5rem;
+    overflow: hidden;
+    border: 1px solid rgba(51, 43, 36, 0.14);
+    border-radius: 18px;
+    background: rgba(255, 253, 250, 0.82);
+    box-shadow: 0 18px 45px rgba(51, 43, 36, 0.12);
+    text-align: left;
+}
+
+.reservation-pdf-preview__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid rgba(51, 43, 36, 0.1);
+    color: var(--text-main);
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.reservation-pdf-preview__header a {
+    color: var(--accent);
+    font-size: 0.86rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.reservation-pdf-preview__header a:hover {
+    text-decoration: underline;
+}
+
+.reservation-preview-image-wrapper {
+    max-height: min(68vh, 720px);
+    overflow: auto;
+    background: #f7f2eb;
+}
+
+.reservation-preview-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: #f7f2eb;
+}
+
+.reservation-pdf-preview__fallback {
+    margin: 0;
+    padding: 1.4rem;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
 .reservation-feedback-modal__button {
     border: none;
     cursor: pointer;
 }
 
+/* //Sección Footer// */
 .site-footer {
     padding: 4.5rem 0 2rem;
     background: #332b24;
@@ -1296,6 +1347,8 @@ button {
     font-size: 0.9rem;
 }
 
+/* //Cookies// */
+
 .cookie-preferences-button {
     display: inline-flex;
     margin-top: 0.7rem;
@@ -1368,7 +1421,6 @@ button {
     box-shadow: var(--shadow-soft);
 }
 
-/* Cookies */
 .cookie-banner {
     position: fixed;
     left: 1.25rem;
@@ -1481,6 +1533,8 @@ button {
     display: none;
 }
 
+/* //Responsive// */
+
 @media (max-width: 1024px) {
     .section {
         padding: 5.5rem 0;
@@ -1571,17 +1625,18 @@ button {
 
     .hero-content {
         padding-top: 5rem;
-    }
+
+        }
 
     .book-shell {
         min-height: auto;
-        max-width: 620px;
+        max-width: 520px;
     }
 
     .book-static {
         grid-template-columns: 1fr;
         min-height: auto;
-        border-radius: 28px;
+        border-radius: 24px;
     }
 
     .book-static-left,
@@ -1592,13 +1647,13 @@ button {
     }
 
     .book-static-left {
-        border-radius: 28px 28px 0 0;
+        border-radius: 24px 24px 0 0;
         border-bottom: none;
     }
 
     .book-static-right {
-        border-radius: 0 0 28px 28px;
-        height: 360px;
+        border-radius: 0 0 24px 24px;
+        height: 290px;
     }
 
     .book-static-left::after,
@@ -1609,7 +1664,7 @@ button {
     }
 
     .book-page-copy {
-        padding: 2.4rem 1.8rem;
+        padding: 1.9rem 1.45rem;
     }
 
     .book-page-image::after {
@@ -1626,7 +1681,8 @@ button {
     }
 
     .musicians-grid {
-        grid-template-columns: repeat(auto-fit, 270px);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1rem;
     }
 
     .reservation-form__row {
@@ -1722,21 +1778,85 @@ button {
         height: 300px;
     }
 
+    .book-shell {
+        max-width: 360px;
+        margin-inline: auto;
+    }
+
+    .book-static {
+        display: grid;
+        grid-template-columns: 1fr;
+        border-radius: 22px;
+        overflow: hidden;
+    }
+
+    .book-static-left {
+        border-radius: 22px 22px 0 0;
+    }
+
     .book-static-right {
-        height: 300px;
+        height: 210px;
+        border-radius: 0 0 22px 22px;
     }
 
     .book-page-copy {
-        padding: 2rem 1.4rem;
+        padding: 1.45rem 1.15rem 1.25rem;
+    }
+
+    .book-page-copy-label {
+        margin-bottom: 0.65rem;
+        font-size: 0.68rem;
+        letter-spacing: 0.11rem;
     }
 
     .book-page-copy h3 {
-        font-size: 1.85rem;
+        margin-bottom: 0.75rem;
+        font-size: 1.45rem;
+        line-height: 1.1;
     }
 
     .book-page-copy p {
-        font-size: 0.98rem;
-        line-height: 1.75;
+        font-size: 0.86rem;
+        line-height: 1.55;
+    }
+
+    .book-page-image {
+        height: 100%;
+    }
+
+    .book-page-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 42%;
+    }
+
+    .book-static-right {
+        height: 245px;
+    }
+
+    .book-page-copy {
+        padding: 1.55rem 1.15rem;
+    }
+
+    .book-page-copy-label {
+        margin-bottom: 0.7rem;
+        font-size: 0.68rem;
+        letter-spacing: 0.12rem;
+    }
+
+    .book-page-copy h3 {
+        margin-bottom: 0.85rem;
+        font-size: 1.55rem;
+    }
+
+    .book-page-copy p {
+        font-size: 0.88rem;
+        line-height: 1.65;
+    }
+
+    .book-page-image img {
+        object-position: center 30%;
     }
 
     .music-player-card {
@@ -1766,6 +1886,10 @@ button {
 
     .reservation-feedback-modal__body {
         padding: 2rem 1.4rem;
+    }
+
+    .reservation-pdf-preview__frame {
+        height: 360px;
     }
 
     .footer-contact-card {
@@ -1825,15 +1949,107 @@ button {
     }
 
     .musicians-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+        justify-content: center;
     }
 
-    .flip-card,
+    .book-shell {
+        max-width: 330px;
+    }
+
+    .book-static {
+        border-radius: 20px;
+    }
+
+    .book-static-left {
+        border-radius: 20px 20px 0 0;
+    }
+
+    .book-static-right {
+        height: 190px;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .book-page-copy {
+        padding: 1.25rem 1rem 1.1rem;
+    }
+
+    .book-page-copy h3 {
+        font-size: 1.3rem;
+    }
+
+    .book-page-copy p {
+        font-size: 0.8rem;
+        line-height: 1.5;
+    }
+
+    .book-page-image img {
+        object-position: center 45%;
+    }
+
+    .formats-book-controls {
+        margin-top: 0.85rem;
+    }
+
+    .book-control {
+        width: 42px;
+        height: 42px;
+        font-size: 1rem;
+    }
+
+    .flip-card {
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+        aspect-ratio: 270 / 390;
+        height: auto;
+        min-height: 0;
+        max-height: none;
+        flex: none;
+    }
+
     .flip-card-inner,
     .flip-card-face {
         width: 100%;
         min-width: 0;
         max-width: none;
+        height: 100%;
+        min-height: 0;
+        max-height: none;
+    }
+
+    .flip-card-face {
+        border-radius: 18px;
+    }
+
+    .flip-card-front-caption {
+        left: 0.75rem;
+        right: 0.75rem;
+        bottom: 0.75rem;
+    }
+
+    .flip-card-front-caption h3 {
+        font-size: 0.85rem;
+        line-height: 1.15;
+    }
+
+    .flip-card-back {
+        padding: 0.85rem;
+    }
+
+    .flip-card-back-content {
+        gap: 0.45rem;
+    }
+
+    .flip-card-back h3 {
+        font-size: 0.95rem;
+        line-height: 1.15;
+    }
+
+    .flip-card-back p {
+        font-size: 0.72rem;
+        line-height: 1.45;
     }
 
     .floating-reservation,

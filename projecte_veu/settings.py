@@ -188,6 +188,10 @@ LOGIN_REDIRECT_URL = "backoffice:dashboard"
 LOGOUT_REDIRECT_URL = "login"
 
 
+SESSION_COOKIE_AGE = 1800
+SESSION_SAVE_EVERY_REQUEST = True
+
+
 if os.environ.get("RENDER"):
     CSRF_TRUSTED_ORIGINS = [
         f"https://{RENDER_EXTERNAL_HOSTNAME}",

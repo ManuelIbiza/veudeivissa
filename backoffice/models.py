@@ -4,6 +4,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
+'''Clase BackofficeUserProfile. Crea el objeto que el ORM gestionará para crear la tabla de perfiles y permisos de usuarios del backoffice.'''
 class BackofficeUserProfile(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,

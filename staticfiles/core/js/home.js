@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initReservationFeedbackModal();
 });
 
+// '''Función initMobileMenu. Gestiona la apertura y cierre del menú móvil de navegación.'''
 function initMobileMenu() {
     const navToggle = document.getElementById('navToggle');
     const navLinks = document.getElementById('navLinks');
@@ -33,11 +34,13 @@ function initMobileMenu() {
     });
 }
 
+// '''Función initLanguageCookie. Guarda y recupera el idioma elegido por el usuario mediante cookies.'''
 function initLanguageCookie() {
     const languageLinks = document.querySelectorAll('[data-language-code]');
     const languageCookieName = 'veu_selected_language';
     const availableLanguages = ['es', 'ca', 'en'];
 
+    // '''Función getCookie. Obtiene el valor de una cookie por su nombre.'''
     function getCookie(name) {
         const cookies = document.cookie.split(';');
 
@@ -52,6 +55,7 @@ function initLanguageCookie() {
         return null;
     }
 
+    // '''Función setCookie. Crea o actualiza una cookie con una duración determinada.'''
     function setCookie(name, value, days) {
         const date = new Date();
         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
@@ -62,6 +66,7 @@ function initLanguageCookie() {
             '; SameSite=Lax';
     }
 
+    // '''Función getCurrentLanguageFromPath. Obtiene el idioma actual a partir de la URL.'''
     function getCurrentLanguageFromPath() {
         const pathParts = window.location.pathname.split('/').filter(Boolean);
 
@@ -76,6 +81,7 @@ function initLanguageCookie() {
         return null;
     }
 
+    // '''Función redirectToSavedLanguageIfNeeded. Redirige al idioma guardado si la URL no contiene idioma.'''
     function redirectToSavedLanguageIfNeeded() {
         const savedLanguage = getCookie(languageCookieName);
         const currentLanguage = getCurrentLanguageFromPath();
@@ -112,6 +118,7 @@ function initLanguageCookie() {
     }
 }
 
+// '''Función initHeroSlider. Inicializa el carrusel automático de imágenes del hero.'''
 function initHeroSlider() {
     const heroImage = document.getElementById('heroImage');
     const dataElement = document.getElementById('hero-images-data');
@@ -154,6 +161,7 @@ function initHeroSlider() {
     }, 5000);
 }
 
+// '''Función initAboutSlider. Inicializa el carrusel automático de imágenes de la sección About.'''
 function initAboutSlider() {
     const aboutImage = document.getElementById('aboutImage');
     const dataElement = document.getElementById('about-images-data');
@@ -196,6 +204,7 @@ function initAboutSlider() {
     }, 6000);
 }
 
+// '''Función initFormatsBook. Inicializa el libro interactivo de formatos musicales.'''
 function initFormatsBook() {
     const dataElement = document.getElementById('formats-data');
 
@@ -231,6 +240,7 @@ function initFormatsBook() {
     let isAnimating = false;
     let fallbackTimer = null;
 
+    // '''Función createTextPage. Crea la página de texto de un formato musical.'''
     function createTextPage(format) {
         const wrapper = document.createElement('div');
         wrapper.className = 'book-page-copy';
@@ -247,6 +257,7 @@ function initFormatsBook() {
         return wrapper;
     }
 
+    // '''Función createImagePage. Crea la página de imagen de un formato musical.'''
     function createImagePage(format) {
         const wrapper = document.createElement('div');
         wrapper.className = 'book-page-image';
@@ -266,16 +277,19 @@ function initFormatsBook() {
         return wrapper;
     }
 
+    // '''Función setPageContent. Sustituye el contenido de una página del libro.'''
     function setPageContent(element, content) {
         element.innerHTML = '';
         element.appendChild(content);
     }
 
+    // '''Función renderStatic. Pinta las páginas visibles del libro sin animación.'''
     function renderStatic(format) {
         setPageContent(bookStaticLeft, createTextPage(format));
         setPageContent(bookStaticRight, createImagePage(format));
     }
 
+    // '''Función cleanFlipPage. Limpia las clases y el contenido de la página animada.'''
     function cleanFlipPage() {
         bookFlipPage.classList.remove('is-ready');
         bookFlipPage.classList.remove('is-flipping');
@@ -285,6 +299,7 @@ function initFormatsBook() {
         bookFaceBack.innerHTML = '';
     }
 
+    // '''Función setButtonsDisabled. Activa o desactiva los botones del libro durante la animación.'''
     function setButtonsDisabled(disabled) {
         if (prevButton) {
             prevButton.disabled = disabled;
@@ -295,6 +310,7 @@ function initFormatsBook() {
         }
     }
 
+    // '''Función prepareForward. Prepara el contenido visual para pasar a la página siguiente.'''
     function prepareForward(currentFormat, nextFormat) {
         setPageContent(bookStaticLeft, createTextPage(currentFormat));
         setPageContent(bookStaticRight, createImagePage(nextFormat));
@@ -303,6 +319,7 @@ function initFormatsBook() {
         bookFlipPage.classList.add('is-forward');
     }
 
+    // '''Función prepareBackward. Prepara el contenido visual para volver a la página anterior.'''
     function prepareBackward(currentFormat, previousFormat) {
         setPageContent(bookStaticLeft, createTextPage(previousFormat));
         setPageContent(bookStaticRight, createImagePage(currentFormat));
@@ -311,6 +328,7 @@ function initFormatsBook() {
         bookFlipPage.classList.add('is-backward');
     }
 
+    // '''Función finishAnimation. Finaliza la animación del libro y actualiza el formato actual.'''
     function finishAnimation(nextFormat, nextIndex) {
         if (fallbackTimer) {
             window.clearTimeout(fallbackTimer);
@@ -324,6 +342,7 @@ function initFormatsBook() {
         setButtonsDisabled(false);
     }
 
+    // '''Función goToIndex. Cambia a un formato concreto aplicando la animación indicada.'''
     function goToIndex(nextIndex, direction) {
         if (isAnimating || nextIndex === currentIndex) {
             return;
@@ -367,16 +386,19 @@ function initFormatsBook() {
         }, 1450);
     }
 
+    // '''Función nextFormat. Avanza al siguiente formato del libro.'''
     function nextFormat() {
         const nextIndex = (currentIndex + 1) % formats.length;
         goToIndex(nextIndex, 'forward');
     }
 
+    // '''Función prevFormat. Retrocede al formato anterior del libro.'''
     function prevFormat() {
         const previousIndex = (currentIndex - 1 + formats.length) % formats.length;
         goToIndex(previousIndex, 'backward');
     }
 
+    // '''Función prepareClickablePages. Permite cambiar de formato haciendo clic en las páginas del libro.'''
     function prepareClickablePages() {
         bookStaticLeft.classList.add('book-static-page-clickable');
         bookStaticRight.classList.add('book-static-page-clickable');
@@ -427,6 +449,7 @@ function initFormatsBook() {
     renderStatic(formats[currentIndex]);
 }
 
+// '''Función initMusicPlayer. Gestiona el reproductor de Spotify y el cambio de canción activa.'''
 function initMusicPlayer() {
     const spotifyPlayer = document.getElementById('spotifyPlayer');
     const trackTitle = document.getElementById('musicTrackTitle');
@@ -464,6 +487,7 @@ function initMusicPlayer() {
     });
 }
 
+// '''Función initCookieConsent. Gestiona el aviso de cookies y la carga o bloqueo del reproductor de Spotify.'''
 function initCookieConsent() {
     const cookieBanner = document.getElementById('cookieBanner');
     const acceptButton = document.getElementById('cookieAccept');
@@ -473,6 +497,7 @@ function initCookieConsent() {
 
     const consentCookieName = 'veu_cookie_consent';
 
+    // '''Función getCookie. Obtiene el valor de una cookie por su nombre.'''
     function getCookie(name) {
         const cookies = document.cookie.split(';');
 
@@ -487,6 +512,7 @@ function initCookieConsent() {
         return null;
     }
 
+    // '''Función setCookie. Crea o actualiza una cookie con una duración determinada.'''
     function setCookie(name, value, days) {
         const date = new Date();
         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
@@ -497,6 +523,7 @@ function initCookieConsent() {
             '; SameSite=Lax';
     }
 
+    // '''Función showBanner. Muestra el aviso de cookies.'''
     function showBanner() {
         if (!cookieBanner) {
             return;
@@ -506,6 +533,7 @@ function initCookieConsent() {
         cookieBanner.setAttribute('aria-hidden', 'false');
     }
 
+    // '''Función hideBanner. Oculta el aviso de cookies.'''
     function hideBanner() {
         if (!cookieBanner) {
             return;
@@ -515,6 +543,7 @@ function initCookieConsent() {
         cookieBanner.setAttribute('aria-hidden', 'true');
     }
 
+    // '''Función loadSpotifyPlayers. Carga el reproductor de Spotify cuando las cookies están aceptadas.'''
     function loadSpotifyPlayers() {
         const spotifyPlayer = document.getElementById('spotifyPlayer');
         const spotifyPlaceholder = document.getElementById('spotifyCookiePlaceholder');
@@ -536,6 +565,7 @@ function initCookieConsent() {
         }
     }
 
+    // '''Función unloadSpotifyPlayers. Desactiva el reproductor de Spotify cuando las cookies no están aceptadas.'''
     function unloadSpotifyPlayers() {
         const spotifyPlayer = document.getElementById('spotifyPlayer');
         const spotifyPlaceholder = document.getElementById('spotifyCookiePlaceholder');
@@ -552,12 +582,14 @@ function initCookieConsent() {
         }
     }
 
+    // '''Función acceptCookies. Guarda la aceptación de cookies y activa Spotify.'''
     function acceptCookies() {
         setCookie(consentCookieName, 'accepted', 180);
         hideBanner();
         loadSpotifyPlayers();
     }
 
+    // '''Función rejectCookies. Guarda el rechazo de cookies y desactiva Spotify.'''
     function rejectCookies() {
         setCookie(consentCookieName, 'rejected', 180);
         hideBanner();
@@ -594,6 +626,7 @@ function initCookieConsent() {
     });
 }
 
+// '''Función initReservationModal. Gestiona la apertura y cierre del modal de reserva.'''
 function initReservationModal() {
     const reservationModal = document.getElementById('reservationModal');
     const openReservationButtons = document.querySelectorAll('.js-open-reservation');
@@ -603,6 +636,7 @@ function initReservationModal() {
         return;
     }
 
+    // '''Función openReservationModal. Abre el modal de reserva.'''
     function openReservationModal(event) {
         if (event) {
             event.preventDefault();
@@ -613,6 +647,7 @@ function initReservationModal() {
         document.body.classList.add('reservation-modal-open');
     }
 
+    // '''Función closeReservationModal. Cierra el modal de reserva.'''
     function closeReservationModal(event) {
         if (event) {
             event.preventDefault();
@@ -638,6 +673,7 @@ function initReservationModal() {
     });
 }
 
+// '''Función initReservationFeedbackModal. Gestiona el cierre del modal de confirmación de reserva.'''
 function initReservationFeedbackModal() {
     const feedbackModal = document.getElementById('reservationFeedbackModal');
     const closeFeedbackButtons = document.querySelectorAll('.js-close-feedback');
@@ -646,6 +682,7 @@ function initReservationFeedbackModal() {
         return;
     }
 
+    // '''Función closeFeedbackModal. Cierra el modal de confirmación de reserva.'''
     function closeFeedbackModal(event) {
         if (event) {
             event.preventDefault();

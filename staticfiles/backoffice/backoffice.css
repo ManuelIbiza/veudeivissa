@@ -1,3 +1,5 @@
+/* //Variables y estilos generales// */
+
 :root {
     --bg-main: #f5f0e8;
     --bg-soft: #efe7dc;
@@ -61,6 +63,8 @@ button:disabled {
     opacity: 0.7;
 }
 
+/* //Página de inicio de sesión// */
+
 .login-body {
     min-height: 100vh;
     background:
@@ -117,6 +121,8 @@ button:disabled {
     margin-top: 1.5rem;
 }
 
+/* //Alertas y mensajes// */
+
 .alert {
     margin-top: 1.25rem;
     border-radius: var(--radius-sm);
@@ -142,6 +148,8 @@ button:disabled {
     border-color: #c5d9e8;
     color: #35546d;
 }
+
+/* //Botones generales// */
 
 .btn {
     display: inline-flex;
@@ -174,6 +182,8 @@ button:disabled {
 .btn-secondary:hover {
     background: #f2ebe2;
 }
+
+/* //Estructura principal del backoffice// */
 
 .backoffice-layout {
     min-height: 100vh;
@@ -346,6 +356,8 @@ button:disabled {
     gap: 0.75rem;
 }
 
+/* //Formularios generales del backoffice// */
+
 .dashboard-form {
     display: flex;
     flex-direction: column;
@@ -423,6 +435,8 @@ button:disabled {
     justify-content: flex-start;
     margin-top: 0.5rem;
 }
+
+/* //Tablas del backoffice// */
 
 .dashboard-table-wrapper {
     overflow-x: auto;
@@ -538,6 +552,8 @@ button:disabled {
     box-shadow: 0 0 0 4px rgba(184, 155, 122, 0.2);
 }
 
+/* //Controles de ordenación// */
+
 .order-controls {
     display: inline-flex;
     align-items: center;
@@ -630,6 +646,8 @@ button:disabled {
     color: #934545;
 }
 
+/* //Formularios con previsualización de imagen// */
+
 .image-form-layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 260px;
@@ -681,6 +699,8 @@ button:disabled {
     display: block;
 }
 
+/* //Secciones y bloques de traducción// */
+
 .dashboard-section {
     background: var(--bg-card);
     border: 1px solid var(--border-soft);
@@ -725,6 +745,8 @@ button:disabled {
     font-size: 0.92rem;
 }
 
+/* //Formularios de imágenes y multimedia// */
+
 .media-settings-layout {
     display: grid;
     grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
@@ -763,6 +785,8 @@ button:disabled {
     display: block;
     object-fit: cover;
 }
+
+/* //Campos compactos y estado activo// */
 
 .file-input-wrapper {
     max-width: 340px;
@@ -845,6 +869,8 @@ button:disabled {
     margin: 0;
     order: 2;
 }
+
+/* //Campos de formulario personalizados// */
 
 .form-field {
     display: flex;
@@ -938,6 +964,8 @@ button:disabled {
     gap: 0.75rem;
     margin-top: 1rem;
 }
+
+/* //Configuración general del sitio// */
 
 .site-config-layout {
     display: flex;
@@ -1050,6 +1078,8 @@ button:disabled {
     justify-content: flex-start;
 }
 
+/* //Permisos de usuarios del backoffice// */
+
 .manager-permissions {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1083,6 +1113,8 @@ button:disabled {
     line-height: 1.45;
 }
 
+/* //Resumen de reservas// */
+
 .reservations-summary {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1112,6 +1144,8 @@ button:disabled {
     font-size: 1.8rem;
     line-height: 1;
 }
+
+/* //Detalle de reserva// */
 
 .reservation-detail-grid {
     display: grid;
@@ -1173,6 +1207,8 @@ button:disabled {
     margin-top: 0.75rem;
 }
 
+/* //Estados de reserva// */
+
 .reservation-status-pending {
     background: #fff3dd;
     color: #8a6330;
@@ -1192,6 +1228,8 @@ button:disabled {
     background: #e8f0f6;
     color: #35546d;
 }
+
+/* //Estadísticas de reservas// */
 
 .reservation-stats-grid {
     display: grid;
@@ -1224,6 +1262,8 @@ button:disabled {
     font-size: 2rem;
     line-height: 1;
 }
+
+/* //Listado de reservas// */
 
 .reservation-list {
     display: flex;
@@ -1370,12 +1410,14 @@ button:disabled {
     transform: translateY(-1px);
 }
 
+/* //Responsive de reservas// */
 @media (max-width: 1180px) {
     .reservation-detail-grid-list {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
+/* //Responsive general del backoffice// */
 @media (max-width: 920px) {
     .reservation-stats-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));

@@ -20,6 +20,7 @@ def get_translated_field(obj, field_name):
     return getattr(obj, field_name)
 
 
+'''Clase Musician. Crea el objeto que el ORM gestionará para crear la tabla de músicos mostrados en la web.'''
 class Musician(models.Model):
     name = models.CharField(
         max_length=120,

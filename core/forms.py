@@ -8,16 +8,21 @@ from musicians.models import Musician
 from .models import EventFormat, Reservation
 
 
+# '''Clase TranslatedEventFormatChoiceField. Personaliza el selector de formatos para mostrar su título traducido.'''
 class TranslatedEventFormatChoiceField(forms.ModelChoiceField):
+    # '''Método label_from_instance. Muestra el título traducido del formato en el selector del formulario.'''
     def label_from_instance(self, obj):
         return obj.translated_title
 
 
+# '''Clase TranslatedMusicianChoiceField. Personaliza el selector de músicos para mostrar el nombre y el instrumento traducido.'''
 class TranslatedMusicianChoiceField(forms.ModelChoiceField):
+    # '''Método label_from_instance. Muestra el nombre del músico junto con su instrumento traducido en el selector.'''
     def label_from_instance(self, obj):
         return f'{obj.name} - {obj.translated_instrument}'
 
 
+# '''Clase ReservationForm. Define el formulario público para crear solicitudes de reserva desde la web.'''
 class ReservationForm(forms.ModelForm):
     website = forms.CharField(
         required=False,
@@ -155,6 +160,7 @@ class ReservationForm(forms.ModelForm):
             ),
         }
 
+    # '''Método __init__. Inicializa el formulario, limita la fecha mínima y carga solo formatos y músicos activos.'''
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -182,6 +188,7 @@ class ReservationForm(forms.ModelForm):
 
         self.fields['website'].required = False
 
+    # '''Método clean_client_phone. Valida que el teléfono tenga formato correcto y una cantidad válida de números.'''
     def clean_client_phone(self):
         phone = self.cleaned_data.get('client_phone', '').strip()
 
@@ -210,6 +217,7 @@ class ReservationForm(forms.ModelForm):
 
         return phone
 
+    # '''Método clean_client_email. Valida que el email obligatorio no llegue vacío.'''
     def clean_client_email(self):
         email = self.cleaned_data.get('client_email', '').strip()
 
@@ -218,6 +226,7 @@ class ReservationForm(forms.ModelForm):
 
         return email
 
+    # '''Método clean_event_date. Impide seleccionar una fecha anterior al día actual.'''
     def clean_event_date(self):
         event_date = self.cleaned_data.get('event_date')
 
@@ -228,6 +237,7 @@ class ReservationForm(forms.ModelForm):
 
         return event_date
 
+    # '''Método clean_guests. Valida que el número de invitados exista y sea mayor que cero.'''
     def clean_guests(self):
         guests = self.cleaned_data.get('guests')
 
@@ -239,6 +249,7 @@ class ReservationForm(forms.ModelForm):
 
         return guests
 
+    # '''Método clean. Valida el formulario completo y bloquea envíos automatizados mediante el campo honeypot.'''
     def clean(self):
         cleaned_data = super().clean()
 

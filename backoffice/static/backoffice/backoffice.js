@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    // '''Función normalizeUrl. Normaliza una URL para comparar solo su ruta dentro del sitio.'''
     function normalizeUrl(url) {
         if (!url) {
             return '';
@@ -20,10 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // '''Función getCurrentPageUrl. Obtiene la URL actual incluyendo ruta y parámetros.'''
     function getCurrentPageUrl() {
         return window.location.pathname + window.location.search;
     }
 
+    // '''Función setActiveSidebarButton. Marca como activo el botón seleccionado del menú lateral.'''
     function setActiveSidebarButton(activeButton) {
         sidebarButtons.forEach((button) => {
             button.classList.remove('is-active');
@@ -34,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // '''Función setActiveSidebarButtonByUrl. Activa el botón del menú lateral correspondiente a una URL.'''
     function setActiveSidebarButtonByUrl(url) {
         const normalizedTargetUrl = normalizeUrl(url);
 
@@ -52,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // '''Función isFullPageHtml. Comprueba si la respuesta recibida contiene una página HTML completa.'''
     function isFullPageHtml(html) {
         const normalizedHtml = html.toLowerCase();
 
@@ -63,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         );
     }
 
+    // '''Función hasFormErrors. Comprueba si el HTML recibido contiene errores de formulario.'''
     function hasFormErrors(html) {
         const normalizedHtml = html.toLowerCase();
 
@@ -75,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
         );
     }
 
+    // '''Función getParentUrlFromContent. Busca la URL padre guardada en el contenido cargado.'''
     function getParentUrlFromContent() {
         const elementWithParentUrl = content.querySelector('[data-parent-url]');
 
@@ -85,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return elementWithParentUrl.dataset.parentUrl || null;
     }
 
+    // '''Función updateCurrentSectionFromContent. Actualiza la sección actual usando la URL padre o una URL alternativa.'''
     function updateCurrentSectionFromContent(fallbackUrl) {
         const parentUrl = getParentUrlFromContent();
 
@@ -98,6 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setActiveSidebarButtonByUrl(fallbackUrl);
     }
 
+    // '''Función updateBrowserHistory. Actualiza el historial del navegador al cambiar de sección.'''
     function updateBrowserHistory(url, replaceHistory) {
         if (!url) {
             return;
@@ -115,6 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.history.pushState(state, '', url);
     }
 
+    // '''Función replaceContentOrRedirect. Sustituye el contenido del backoffice o redirige si recibe una página completa.'''
     function replaceContentOrRedirect(html, response, loadedUrl) {
         if (isFullPageHtml(html)) {
             window.location.href = response.url;
@@ -126,6 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCurrentSectionFromContent(loadedUrl);
     }
 
+    // '''Función getFormReturnUrl. Obtiene la URL a la que debe volver un formulario tras guardarse.'''
     function getFormReturnUrl(form) {
         const explicitParentUrl = form.dataset.parentUrl;
 
@@ -156,6 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return null;
     }
 
+    // '''Función AJAX loadSection. Carga una sección del backoffice mediante fetch y actualiza el contenido sin recargar la página.'''
     async function loadSection(url, options = {}) {
         const shouldPushHistory = options.pushHistory !== false;
         const shouldReplaceHistory = options.replaceHistory === true;
@@ -190,6 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // '''Función AJAX submitForm. Envía formularios del backoffice mediante fetch y actualiza la sección correspondiente.'''
     async function submitForm(form) {
         const formData = new FormData(form);
         const submitButton = form.querySelector('button[type="submit"]');
@@ -266,6 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // '''Función bindDynamicLinks. Asigna comportamiento AJAX a los enlaces dinámicos del contenido cargado.'''
     function bindDynamicLinks() {
         const ajaxLinks = content.querySelectorAll('[data-ajax-link]');
 
@@ -290,6 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // '''Función bindDynamicForms. Asigna el envío AJAX a los formularios cargados dinámicamente.'''
     function bindDynamicForms() {
         const ajaxForms = content.querySelectorAll('form');
 
@@ -312,6 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // '''Función bindDynamicContent. Reactiva enlaces y formularios después de cargar contenido nuevo.'''
     function bindDynamicContent() {
         bindDynamicLinks();
         bindDynamicForms();

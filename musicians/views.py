@@ -5,6 +5,7 @@ from core.models import SiteConfiguration
 from .models import Musician
 
 
+'''Vista musician_list. Devuelve la sección con los músicos activos ordenados para la web.'''
 def musician_list(request):
     config = SiteConfiguration.get_solo()
 

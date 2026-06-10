@@ -36,6 +36,7 @@ RESERVATION_PDF_SESSION_KEY = 'latest_reservation_pdf_filename'
 RESERVATION_PREVIEW_SESSION_KEY = 'latest_reservation_preview_filename'
 
 
+'''Función auxiliar get_selected_language. Obtiene el idioma activo de la petición y comprueba que sea uno de los idiomas disponibles.'''
 def get_selected_language(request):
     selected_language = getattr(request, 'LANGUAGE_CODE', settings.LANGUAGE_CODE)
     available_languages = [language_code for language_code, language_name in settings.LANGUAGES]
@@ -46,6 +47,7 @@ def get_selected_language(request):
     return selected_language
 
 
+'''Función auxiliar set_language_cookie. Guarda el idioma seleccionado en una cookie para mantenerlo en futuras visitas.'''
 def set_language_cookie(response, language_code):
     response.set_cookie(
         settings.LANGUAGE_COOKIE_NAME,
@@ -57,6 +59,7 @@ def set_language_cookie(response, language_code):
     return response
 
 
+'''Función get_reservation_value. Devuelve el valor de un campo de reserva o un texto por defecto si está vacío.'''
 def get_reservation_value(value, fallback=None):
     if fallback is None:
         fallback = _('No indicado')
@@ -66,10 +69,13 @@ def get_reservation_value(value, fallback=None):
 
     return fallback
 
+
+'''Función auxiliar get_first_hero_background. Obtiene la primera imagen activa del hero para usarla como fondo.'''
 def get_first_hero_background(hero_images):
     return hero_images.first()
 
 
+'''Función auxiliar get_image_bytes_from_field. Lee una imagen desde un campo ImageField y devuelve su contenido en bytes.'''
 def get_image_bytes_from_field(image_field):
     if not image_field:
         return None
@@ -91,6 +97,8 @@ def get_image_bytes_from_field(image_field):
         logger.exception('No se pudo leer la imagen desde el almacenamiento.')
         return None
 
+
+'''Función auxiliar build_reservation_text. Construye el contenido textual con el resumen de una reserva.'''
 def build_reservation_text(reservation, config):
     event_time = _('No indicada')
 
@@ -170,6 +178,7 @@ def build_reservation_text(reservation, config):
     ]
 
 
+'''Función auxiliar draw_cover_image. Dibuja una imagen cubriendo toda la página del PDF.'''
 def draw_cover_image(pdf, image_source, page_width, page_height):
     if isinstance(image_source, bytes):
         image_reader = ImageReader(BytesIO(image_source))
@@ -203,6 +212,7 @@ def draw_cover_image(pdf, image_source, page_width, page_height):
     )
 
 
+'''Función auxiliar draw_pdf_background. Dibuja el fondo del PDF y añade una capa clara para mejorar la lectura.'''
 def draw_pdf_background(pdf, background_image, page_width, page_height):
     if background_image and background_image.image:
         try:
@@ -238,6 +248,7 @@ def draw_pdf_background(pdf, background_image, page_width, page_height):
     pdf.restoreState()
 
 
+'''Función auxiliar draw_pdf_logo. Dibuja el logo de la web dentro del PDF si existe.'''
 def draw_pdf_logo(pdf, config, x, y):
     if not config.logo:
         return y
@@ -280,6 +291,7 @@ def draw_pdf_logo(pdf, config, x, y):
         return y
 
 
+'''Función auxiliar draw_wrapped_line. Dibuja texto en el PDF dividiéndolo en varias líneas si es demasiado largo.'''
 def draw_wrapped_line(pdf, text, x, y, max_chars=92, line_height=0.48 * cm):
     if text == '':
         return y - line_height
@@ -296,6 +308,7 @@ def draw_wrapped_line(pdf, text, x, y, max_chars=92, line_height=0.48 * cm):
     return y
 
 
+'''Función auxiliar generate_reservation_pdf. Genera en memoria el PDF con el resumen de una reserva.'''
 def generate_reservation_pdf(reservation, config, background_image=None):
     buffer = BytesIO()
 
@@ -377,6 +390,7 @@ def generate_reservation_pdf(reservation, config, background_image=None):
     return buffer
 
 
+'''Función auxiliar save_reservation_pdf. Guarda en una carpeta privada el PDF generado para una reserva.'''
 def save_reservation_pdf(reservation, config, background_image=None):
     pdf_buffer = generate_reservation_pdf(
         reservation,
@@ -396,6 +410,7 @@ def save_reservation_pdf(reservation, config, background_image=None):
     return file_path, filename
 
 
+'''Función auxiliar load_preview_font. Carga una fuente para generar la imagen de previsualización de la reserva.'''
 def load_preview_font(size, bold=False):
     if ImageFont is None:
         return None
@@ -424,6 +439,7 @@ def load_preview_font(size, bold=False):
     return ImageFont.load_default()
 
 
+'''Función auxiliar resize_image_to_cover. Redimensiona y recorta una imagen para cubrir completamente un tamaño concreto.'''
 def resize_image_to_cover(image, target_width, target_height):
     image_width, image_height = image.size
     image_ratio = image_width / image_height
@@ -444,6 +460,7 @@ def resize_image_to_cover(image, target_width, target_height):
     return image.crop((left, top, left + target_width, top + target_height))
 
 
+'''Función auxiliar draw_preview_wrapped_text. Dibuja texto en la imagen de previsualización ajustándolo al ancho disponible.'''
 def draw_preview_wrapped_text(draw, text, x, y, font, fill, max_width, line_spacing=10):
     if not text:
         return y + 28
@@ -475,6 +492,7 @@ def draw_preview_wrapped_text(draw, text, x, y, font, fill, max_width, line_spac
     return y
 
 
+'''Función auxiliar generate_reservation_preview_image. Genera una imagen PNG de previsualización con el resumen de una reserva.'''
 def generate_reservation_preview_image(reservation, config, background_image=None):
     if Image is None:
         return None
@@ -569,6 +587,7 @@ def generate_reservation_preview_image(reservation, config, background_image=Non
     return output
 
 
+''' Función  auxiliar save_reservation_preview_image. Guarda en una carpeta privada la imagen de previsualización de una reserva.'''
 def save_reservation_preview_image(reservation, config, background_image=None):
     preview_buffer = generate_reservation_preview_image(
         reservation,
@@ -591,6 +610,7 @@ def save_reservation_preview_image(reservation, config, background_image=None):
     return file_path, filename
 
 
+'''Función auxiliar send_reservation_email_with_pdf. Envía al cliente un email de confirmación con el PDF de la reserva adjunto.'''
 def send_reservation_email_with_pdf(
     reservation,
     config,
@@ -649,6 +669,7 @@ def send_reservation_email_with_pdf(
     email.send(fail_silently=False)
 
 
+'''Vista reservation_pdf_preview. Muestra en el navegador el último PDF de reserva guardado en la sesión.'''
 def reservation_pdf_preview(request):
     filename = request.session.get(RESERVATION_PDF_SESSION_KEY)
 
@@ -674,6 +695,7 @@ def reservation_pdf_preview(request):
     return response
 
 
+'''Vista reservation_preview_image. Muestra en el navegador la última imagen de previsualización guardada en la sesión.'''
 def reservation_preview_image(request):
     filename = request.session.get(RESERVATION_PREVIEW_SESSION_KEY)
 
@@ -699,6 +721,7 @@ def reservation_preview_image(request):
     return response
 
 
+'''Vista home. Muestra la página principal, carga sus datos y procesa el formulario de reserva.'''
 def home(request):
     selected_language = get_selected_language(request)
 

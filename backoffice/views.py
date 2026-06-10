@@ -37,26 +37,31 @@ from .models import BackofficeUserProfile
 GESTOR_GROUP_NAME = 'Gestor'
 
 
+# '''Función auxiliar ensure_manager_group. Crea o recupera el grupo de usuarios gestores del backoffice.'''
 def ensure_manager_group():
     group, _ = Group.objects.get_or_create(name=GESTOR_GROUP_NAME)
     return group
 
 
+# '''Función auxiliar get_backoffice_profile. Crea o recupera el perfil de permisos asociado a un usuario.'''
 def get_backoffice_profile(user):
     profile, _ = BackofficeUserProfile.objects.get_or_create(user=user)
     return profile
 
 
+# '''Función auxiliar is_backoffice_user. Comprueba si un usuario tiene acceso permitido al backoffice.'''
 def is_backoffice_user(user):
     return user.is_authenticated and user.is_active and (
         user.is_superuser or user.groups.filter(name=GESTOR_GROUP_NAME).exists()
     )
 
 
+# '''Función auxiliar is_superadmin. Comprueba si el usuario es un superadministrador activo.'''
 def is_superadmin(user):
     return user.is_authenticated and user.is_active and user.is_superuser
 
 
+# '''Función auxiliar can_manage_musicians. Comprueba si el usuario puede crear, editar, eliminar o reordenar músicos.'''
 def can_manage_musicians(user):
     if user.is_superuser:
         return True
@@ -65,6 +70,7 @@ def can_manage_musicians(user):
     return profile.can_manage_musicians
 
 
+# '''Función auxiliar can_manage_site_sections. Comprueba si el usuario puede editar las secciones generales de la web.'''
 def can_manage_site_sections(user):
     if user.is_superuser:
         return True
@@ -73,6 +79,7 @@ def can_manage_site_sections(user):
     return profile.can_manage_site_sections
 
 
+# '''Función auxiliar render_backoffice_partial. Renderiza una vista parcial si la petición es AJAX o el dashboard completo si no lo es.'''
 def render_backoffice_partial(request, template_name, context=None):
     context = context or {}
 
@@ -96,6 +103,7 @@ def render_backoffice_partial(request, template_name, context=None):
     )
 
 
+# '''Función auxiliar reorder_ordered_model_item. Intercambia la posición de un objeto ordenable con el elemento anterior o siguiente.'''
 def reorder_ordered_model_item(model, object_id, direction):
     with transaction.atomic():
         ordered_items = list(
@@ -135,10 +143,12 @@ def reorder_ordered_model_item(model, object_id, direction):
     return True
 
 
+# '''Clase BackofficeLoginView. Gestiona el inicio de sesión específico del backoffice.'''
 class BackofficeLoginView(LoginView):
     template_name = 'backoffice/registration/login.html'
     redirect_authenticated_user = True
 
+    # '''Método get_success_url. Decide a qué página redirigir al usuario después de iniciar sesión.'''
     def get_success_url(self):
         user = self.request.user
 
@@ -150,6 +160,7 @@ class BackofficeLoginView(LoginView):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista dashboard. Muestra la pantalla inicial del backoffice según los permisos del usuario.'''
 def dashboard(request):
     if can_manage_site_sections(request.user):
         config = SiteConfiguration.get_solo()
@@ -181,6 +192,7 @@ def dashboard(request):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista musician_list. Muestra el listado de músicos dentro del backoffice.'''
 def musician_list(request):
     musicians = Musician.objects.all().order_by('display_order', 'id')
 
@@ -196,6 +208,7 @@ def musician_list(request):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista musician_create. Permite crear un nuevo músico desde el backoffice.'''
 def musician_create(request):
     if not can_manage_musicians(request.user):
         messages.error(request, 'No tienes permiso para crear músicos.')
@@ -227,6 +240,7 @@ def musician_create(request):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista musician_update. Permite editar los datos de un músico existente.'''
 def musician_update(request, musician_id):
     musician = get_object_or_404(Musician, id=musician_id)
     user_can_manage_musicians = can_manage_musicians(request.user)
@@ -259,6 +273,7 @@ def musician_update(request, musician_id):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista musician_delete. Elimina un músico si el usuario tiene permisos para hacerlo.'''
 def musician_delete(request, musician_id):
     if not can_manage_musicians(request.user):
         messages.error(request, 'No tienes permiso para eliminar músicos.')
@@ -277,6 +292,7 @@ def musician_delete(request, musician_id):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista musician_reorder. Cambia la posición de un músico en el listado.'''
 def musician_reorder(request, musician_id, direction):
     if not can_manage_musicians(request.user):
         messages.error(request, 'No tienes permiso para reordenar músicos.')
@@ -298,6 +314,7 @@ def musician_reorder(request, musician_id, direction):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista hero_section. Muestra y procesa la edición del contenido principal del hero.'''
 def hero_section(request):
     if not can_manage_site_sections(request.user):
         messages.error(request, 'No tienes permiso para editar esta sección.')
@@ -332,6 +349,7 @@ def hero_section(request):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista about_section. Muestra y procesa la edición de la sección About.'''
 def about_section(request):
     if not can_manage_site_sections(request.user):
         messages.error(request, 'No tienes permiso para editar esta sección.')
@@ -366,12 +384,14 @@ def about_section(request):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista hero_image_list. Devuelve la sección del hero donde se gestionan sus imágenes.'''
 def hero_image_list(request):
     return hero_section(request)
 
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista hero_image_create. Permite añadir una nueva imagen al hero.'''
 def hero_image_create(request):
     if not can_manage_site_sections(request.user):
         messages.error(request, 'No tienes permiso para crear imágenes hero.')
@@ -402,6 +422,7 @@ def hero_image_create(request):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista hero_image_update. Permite editar una imagen existente del hero.'''
 def hero_image_update(request, hero_image_id):
     if not can_manage_site_sections(request.user):
         messages.error(request, 'No tienes permiso para editar imágenes hero.')
@@ -435,6 +456,7 @@ def hero_image_update(request, hero_image_id):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista hero_image_delete. Elimina una imagen del hero.'''
 def hero_image_delete(request, hero_image_id):
     if not can_manage_site_sections(request.user):
         messages.error(request, 'No tienes permiso para eliminar imágenes hero.')
@@ -453,6 +475,7 @@ def hero_image_delete(request, hero_image_id):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista hero_image_reorder. Cambia la posición de una imagen del hero.'''
 def hero_image_reorder(request, hero_image_id, direction):
     if not can_manage_site_sections(request.user):
         messages.error(request, 'No tienes permiso para reordenar imágenes hero.')
@@ -474,12 +497,14 @@ def hero_image_reorder(request, hero_image_id, direction):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista about_image_list. Devuelve la sección About donde se gestionan sus imágenes.'''
 def about_image_list(request):
     return about_section(request)
 
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista about_image_create. Permite añadir una nueva imagen a la sección About.'''
 def about_image_create(request):
     if not can_manage_site_sections(request.user):
         messages.error(request, 'No tienes permiso para crear imágenes about.')
@@ -510,6 +535,7 @@ def about_image_create(request):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista about_image_update. Permite editar una imagen existente de la sección About.'''
 def about_image_update(request, about_image_id):
     if not can_manage_site_sections(request.user):
         messages.error(request, 'No tienes permiso para editar imágenes about.')
@@ -543,6 +569,7 @@ def about_image_update(request, about_image_id):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista about_image_delete. Elimina una imagen de la sección About.'''
 def about_image_delete(request, about_image_id):
     if not can_manage_site_sections(request.user):
         messages.error(request, 'No tienes permiso para eliminar imágenes about.')
@@ -561,6 +588,7 @@ def about_image_delete(request, about_image_id):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista about_image_reorder. Cambia la posición de una imagen de la sección About.'''
 def about_image_reorder(request, about_image_id, direction):
     if not can_manage_site_sections(request.user):
         messages.error(request, 'No tienes permiso para reordenar imágenes about.')
@@ -582,6 +610,7 @@ def about_image_reorder(request, about_image_id, direction):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista format_list. Muestra el listado de formatos de evento en el backoffice.'''
 def format_list(request):
     if not can_manage_site_sections(request.user):
         messages.error(request, 'No tienes permiso para editar esta sección.')
@@ -600,6 +629,7 @@ def format_list(request):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista format_create. Permite crear un nuevo formato de evento.'''
 def format_create(request):
     if not can_manage_site_sections(request.user):
         messages.error(request, 'No tienes permiso para crear formatos.')
@@ -630,6 +660,7 @@ def format_create(request):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista format_update. Permite editar un formato de evento existente.'''
 def format_update(request, format_id):
     if not can_manage_site_sections(request.user):
         messages.error(request, 'No tienes permiso para editar formatos.')
@@ -663,6 +694,7 @@ def format_update(request, format_id):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista format_delete. Elimina un formato de evento.'''
 def format_delete(request, format_id):
     if not can_manage_site_sections(request.user):
         messages.error(request, 'No tienes permiso para eliminar formatos.')
@@ -681,6 +713,7 @@ def format_delete(request, format_id):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista format_reorder. Cambia la posición de un formato dentro del listado.'''
 def format_reorder(request, format_id, direction):
     if not can_manage_site_sections(request.user):
         messages.error(request, 'No tienes permiso para editar esta sección.')
@@ -702,6 +735,7 @@ def format_reorder(request, format_id, direction):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista music_track_list. Muestra el listado de canciones o enlaces de Spotify.'''
 def music_track_list(request):
     if not can_manage_site_sections(request.user):
         messages.error(request, 'No tienes permiso para editar esta sección.')
@@ -720,6 +754,7 @@ def music_track_list(request):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista music_track_create. Permite crear una nueva canción o enlace de Spotify.'''
 def music_track_create(request):
     if not can_manage_site_sections(request.user):
         messages.error(request, 'No tienes permiso para crear canciones.')
@@ -750,6 +785,7 @@ def music_track_create(request):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista music_track_update. Permite editar una canción o enlace de Spotify existente.'''
 def music_track_update(request, music_track_id):
     if not can_manage_site_sections(request.user):
         messages.error(request, 'No tienes permiso para editar canciones.')
@@ -783,6 +819,7 @@ def music_track_update(request, music_track_id):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista music_track_delete. Elimina una canción o enlace de Spotify.'''
 def music_track_delete(request, music_track_id):
     if not can_manage_site_sections(request.user):
         messages.error(request, 'No tienes permiso para eliminar canciones.')
@@ -801,6 +838,7 @@ def music_track_delete(request, music_track_id):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista music_track_reorder. Cambia la posición de una canción dentro del listado.'''
 def music_track_reorder(request, music_track_id, direction):
     if not can_manage_site_sections(request.user):
         messages.error(request, 'No tienes permiso para editar esta sección.')
@@ -822,6 +860,7 @@ def music_track_reorder(request, music_track_id, direction):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista reservation_list. Muestra el listado de reservas y sus contadores por estado.'''
 def reservation_list(request):
     reservations = Reservation.objects.select_related(
         'preferred_format',
@@ -850,6 +889,7 @@ def reservation_list(request):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista reservation_update. Permite gestionar y actualizar el estado o datos internos de una reserva.'''
 def reservation_update(request, reservation_id):
     reservation = get_object_or_404(
         Reservation.objects.select_related(
@@ -885,6 +925,7 @@ def reservation_update(request, reservation_id):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista reservation_delete. Elimina una solicitud de reserva del sistema.'''
 def reservation_delete(request, reservation_id):
     reservation = get_object_or_404(Reservation, id=reservation_id)
 
@@ -899,6 +940,7 @@ def reservation_delete(request, reservation_id):
 
 @login_required
 @user_passes_test(is_backoffice_user)
+# '''Vista site_configuration_update. Permite editar la configuración general del sitio web.'''
 def site_configuration_update(request):
     if not can_manage_site_sections(request.user):
         messages.error(request, 'No tienes permiso para editar la configuración.')
@@ -930,6 +972,7 @@ def site_configuration_update(request):
 
 @login_required
 @user_passes_test(is_superadmin)
+# '''Vista manager_list. Muestra los usuarios gestores y superadministradores del backoffice.'''
 def manager_list(request):
     users = User.objects.filter(
         Q(is_superuser=True) | Q(groups__name=GESTOR_GROUP_NAME)
@@ -952,6 +995,7 @@ def manager_list(request):
 
 @login_required
 @user_passes_test(is_superadmin)
+# '''Vista manager_create. Permite crear un nuevo usuario gestor del backoffice.'''
 def manager_create(request):
     ensure_manager_group()
 
@@ -981,6 +1025,7 @@ def manager_create(request):
 
 @login_required
 @user_passes_test(is_superadmin)
+# '''Vista manager_update. Permite editar los datos y permisos de un usuario gestor.'''
 def manager_update(request, user_id):
     user = get_object_or_404(
         User.objects.filter(
@@ -1019,6 +1064,7 @@ def manager_update(request, user_id):
 
 @login_required
 @user_passes_test(is_superadmin)
+# '''Vista manager_delete. Elimina un usuario gestor del backoffice si no es superadministrador ni el propio usuario.'''
 def manager_delete(request, user_id):
     user = get_object_or_404(
         User.objects.filter(

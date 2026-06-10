@@ -23,6 +23,7 @@ def get_translated_field(obj, field_name):
     return getattr(obj, field_name)
 
 
+'''Clase SiteConfiguration. Crea el objeto que el ORM gestionará para crear la tabla de configuración general del sitio web.'''
 class SiteConfiguration(models.Model):
     site_name = models.CharField(
         max_length=100,
@@ -197,6 +198,7 @@ class SiteConfiguration(models.Model):
         return obj
 
 
+'''Clase HeroImage. Crea el objeto que el ORM gestionará para crear la tabla de imágenes principales del hero.'''
 class HeroImage(models.Model):
     title = models.CharField(
         max_length=120,
@@ -235,6 +237,7 @@ class HeroImage(models.Model):
         return f'Imagen hero {self.id}'
 
 
+'''Clase AboutImage. Crea el objeto que el ORM gestionará para crear la tabla de imágenes de la sección sobre nosotros.'''
 class AboutImage(models.Model):
     title = models.CharField(
         max_length=120,
@@ -273,6 +276,7 @@ class AboutImage(models.Model):
         return f'Imagen about {self.id}'
 
 
+'''Clase MusicTrack. Crea el objeto que el ORM gestionará para crear la tabla de canciones o listas de Spotify mostradas en la web.'''
 class MusicTrack(models.Model):
     title = models.CharField(
         max_length=120
@@ -389,6 +393,7 @@ class MusicTrack(models.Model):
         return f'https://open.spotify.com/embed/{spotify_type}/{spotify_id}'
 
 
+'''Clase EventFormat. Crea el objeto que el ORM gestionará para crear la tabla de formatos de evento ofrecidos en la web.'''
 class EventFormat(models.Model):
     title = models.CharField(
         max_length=120
@@ -457,6 +462,7 @@ class EventFormat(models.Model):
         return get_translated_field(self, 'description')
 
 
+'''Clase ContactMessage. Crea el objeto que el ORM gestionará para crear la tabla de mensajes enviados desde el formulario de contacto.'''
 class ContactMessage(models.Model):
     name = models.CharField(
         max_length=100
@@ -487,6 +493,7 @@ class ContactMessage(models.Model):
         return f"{self.name} - {self.subject}"
 
 
+'''Clase Reservation. Crea el objeto que el ORM gestionará para crear la tabla de solicitudes de reserva realizadas por los clientes.'''
 class Reservation(models.Model):
     STATUS_PENDING = 'pending'
     STATUS_CONFIRMED = 'confirmed'

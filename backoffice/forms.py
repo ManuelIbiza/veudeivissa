@@ -14,7 +14,9 @@ from musicians.models import Musician
 from .models import BackofficeUserProfile
 
 
+# '''Clase UniqueDisplayOrderMixin. Añade validación para evitar que se repita el número de orden entre elementos del mismo modelo.'''
 class UniqueDisplayOrderMixin:
+    # '''Método clean_display_order. Valida que no exista otro elemento con el mismo número de orden.'''
     def clean_display_order(self):
         display_order = self.cleaned_data.get('display_order')
 
@@ -35,6 +37,7 @@ class UniqueDisplayOrderMixin:
         return display_order
 
 
+# '''Clase MusicianForm. Define el formulario completo para crear o editar músicos desde el backoffice.'''
 class MusicianForm(UniqueDisplayOrderMixin, forms.ModelForm):
     class Meta:
         model = Musician
@@ -73,6 +76,7 @@ class MusicianForm(UniqueDisplayOrderMixin, forms.ModelForm):
         }
 
 
+# '''Clase MusicianBasicForm. Define un formulario reducido para modificar únicamente el estado activo de un músico.'''
 class MusicianBasicForm(forms.ModelForm):
     class Meta:
         model = Musician
@@ -85,6 +89,7 @@ class MusicianBasicForm(forms.ModelForm):
         }
 
 
+# '''Clase SiteConfigurationForm. Define el formulario para editar la configuración general del sitio web.'''
 class SiteConfigurationForm(forms.ModelForm):
     class Meta:
         model = SiteConfiguration
@@ -123,6 +128,7 @@ class SiteConfigurationForm(forms.ModelForm):
         }
 
 
+# '''Clase HeroContentForm. Define el formulario para editar los textos principales de la sección hero.'''
 class HeroContentForm(forms.ModelForm):
     class Meta:
         model = SiteConfiguration
@@ -145,6 +151,7 @@ class HeroContentForm(forms.ModelForm):
         }
 
 
+# '''Clase AboutContentForm. Define el formulario para editar los textos de la sección About.'''
 class AboutContentForm(forms.ModelForm):
     class Meta:
         model = SiteConfiguration
@@ -167,6 +174,7 @@ class AboutContentForm(forms.ModelForm):
         }
 
 
+# '''Clase HeroImageForm. Define el formulario para crear o editar imágenes de la sección hero.'''
 class HeroImageForm(UniqueDisplayOrderMixin, forms.ModelForm):
     class Meta:
         model = HeroImage
@@ -193,6 +201,7 @@ class HeroImageForm(UniqueDisplayOrderMixin, forms.ModelForm):
         }
 
 
+# '''Clase AboutImageForm. Define el formulario para crear o editar imágenes de la sección About.'''
 class AboutImageForm(UniqueDisplayOrderMixin, forms.ModelForm):
     class Meta:
         model = AboutImage
@@ -219,6 +228,7 @@ class AboutImageForm(UniqueDisplayOrderMixin, forms.ModelForm):
         }
 
 
+# '''Clase MusicTrackForm. Define el formulario para crear o editar canciones o enlaces de Spotify.'''
 class MusicTrackForm(UniqueDisplayOrderMixin, forms.ModelForm):
     class Meta:
         model = MusicTrack
@@ -245,6 +255,7 @@ class MusicTrackForm(UniqueDisplayOrderMixin, forms.ModelForm):
         }
 
 
+# '''Clase EventFormatForm. Define el formulario para crear o editar formatos de evento.'''
 class EventFormatForm(UniqueDisplayOrderMixin, forms.ModelForm):
     class Meta:
         model = EventFormat
@@ -281,6 +292,7 @@ class EventFormatForm(UniqueDisplayOrderMixin, forms.ModelForm):
         }
 
 
+# '''Clase ReservationBackofficeForm. Define el formulario interno para gestionar el estado y las notas de una reserva.'''
 class ReservationBackofficeForm(forms.ModelForm):
     class Meta:
         model = Reservation
@@ -304,6 +316,7 @@ class ReservationBackofficeForm(forms.ModelForm):
         }
 
 
+# '''Clase BackofficeUserCreateForm. Define el formulario para crear nuevos usuarios gestores del backoffice.'''
 class BackofficeUserCreateForm(forms.ModelForm):
     password1 = forms.CharField(
         label='Contraseña',
@@ -343,6 +356,7 @@ class BackofficeUserCreateForm(forms.ModelForm):
             'is_active': 'Activo',
         }
 
+    # '''Método clean. Valida que las dos contraseñas introducidas coincidan.'''
     def clean(self):
         cleaned_data = super().clean()
         password1 = cleaned_data.get('password1')
@@ -353,6 +367,7 @@ class BackofficeUserCreateForm(forms.ModelForm):
 
         return cleaned_data
 
+    # '''Método save. Guarda el usuario gestor, cifra su contraseña y crea su perfil de permisos.'''
     def save(self, commit=True):
         user = super().save(commit=False)
         user.is_staff = True
@@ -370,6 +385,7 @@ class BackofficeUserCreateForm(forms.ModelForm):
         return user
 
 
+# '''Clase BackofficeUserUpdateForm. Define el formulario para editar usuarios gestores y sus permisos.'''
 class BackofficeUserUpdateForm(forms.ModelForm):
     can_manage_musicians = forms.BooleanField(
         label='Puede añadir y eliminar músicos',
@@ -399,6 +415,7 @@ class BackofficeUserUpdateForm(forms.ModelForm):
             'is_active': 'Activo',
         }
 
+    # '''Método __init__. Carga los permisos actuales del usuario y bloquea campos si es superadministrador.'''
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -412,6 +429,7 @@ class BackofficeUserUpdateForm(forms.ModelForm):
                 self.fields['can_manage_site_sections'].disabled = True
                 self.fields['is_active'].disabled = True
 
+    # '''Método save. Guarda los cambios del usuario y actualiza su perfil de permisos del backoffice.'''
     def save(self, commit=True):
         user = super().save(commit=False)
 
@@ -435,5 +453,8 @@ class BackofficeUserUpdateForm(forms.ModelForm):
         return user
 
 
+# '''Alias ManagerCreateForm. Mantiene un nombre alternativo para el formulario de creación de gestores.'''
 ManagerCreateForm = BackofficeUserCreateForm
+
+# '''Alias ManagerUpdateForm. Mantiene un nombre alternativo para el formulario de edición de gestores.'''
 ManagerUpdateForm = BackofficeUserUpdateForm
